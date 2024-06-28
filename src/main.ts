@@ -59,7 +59,7 @@ const terroristService = new TerroristService(canvas, ctx, {
   height: 20,
 }, healthInfo);
 
-const recoilService = new RecoilService(ctx);
+const recoilService = new RecoilService(ctx, window.innerWidth / 2, window.innerHeight / 2);
 
 function checkCollisions() {
   const bullets = bulletService.bullets,
@@ -112,5 +112,5 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Initial spawn
-// terroristService.spawnTerrorists(10);
+terroristService.spawnTerrorists(50);
 gameLoop();

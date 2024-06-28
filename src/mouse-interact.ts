@@ -1,20 +1,15 @@
 import { BulletService } from "./bullet.service";
 import { RecoilService } from "./recoil";
 
-export function handleMouseInteract(
+export async function handleMouseInteract(
   canvas: HTMLCanvasElement,
   recoilService: RecoilService,
   bulletService: BulletService
 ) {
-  canvas.addEventListener("mousedown", () => {
-    // const rect = canvas.getBoundingClientRect();
-    // targetX = event.clientX - rect.left;
-    // targetY = event.clientY - rect.top;
+  let interval: number;
 
-    const interval = setInterval(() => {
-      //   const dx = targetX - canvas.width / 2;
-      //   const dy = targetY - canvas.height;
-
+  const handleShootAttempt = () => {
+    interval = setInterval(() => {
       const dx = recoilService.cursorX - canvas.width / 2;
       const dy = recoilService.cursorY - canvas.height;
 
@@ -24,45 +19,35 @@ export function handleMouseInteract(
       recoilService.recoil();
     }, 100);
 
-    canvas.addEventListener(
-      "mouseup",
-      () => {
-        clearInterval(interval);
-      },
-      { once: true }
+    canvas.addEventListener("mouseup", () => clearInterval(interval), {
+      once: true,
+    });
+  };
+
+  canvas.addEventListener("click", () => {
+    canvas.requestPointerLock();
+
+    canvas.addEventListener("mousedown", handleShootAttempt);
+    canvas.addEventListener("mousemove", (e) =>
+      recoilService.updateCursorPosition(e)
     );
   });
 
-  canvas.addEventListener("mousemove", (e) => recoilService.updateCursorPosition(e));
-  //   canvas.addEventListener("mousedown", (event) => {
-  //     const rect = canvas.getBoundingClientRect();
-  //     targetX = event.clientX - rect.left;
-  //     targetY = event.clientY - rect.top;
+  canvas.addEventListener("pointerlockchange", () => {
+    if (document.pointerLockElement === canvas) {
+      // ** Pointer lock is active
 
-  //     const interval = setInterval(() => {
-  //       const dx = targetX - canvas.width / 2;
-  //       const dy = targetY - canvas.height;
+      
+    } else{
+      // ** Pointer lock is no longer active
 
-  //       const angle = Math.atan2(dy, dx);
+      canvas.removeEventListener("click", handleShootAttempt);
+      canvas.removeEventListener("mousedown", handleShootAttempt);
+      canvas.removeEventListener("mouseup", () => clearInterval(interval));
 
-  //       bulletService.spawnBullet(canvas.width / 2, canvas.height, angle);
-  //     }, 100);
-
-  //     const mouseMoveHandler = (moveEvent: MouseEvent) => {
-  //       targetX = moveEvent.clientX - rect.left;
-  //       targetY = moveEvent.clientY - rect.top;
-  //     };
-
-  //     mouseMoveHandler(event);
-  //     canvas.addEventListener("mousemove", mouseMoveHandler);
-
-  //     canvas.addEventListener(
-  //       "mouseup",
-  //       () => {
-  //         clearInterval(interval);
-  //         canvas.removeEventListener("mousemove", mouseMoveHandler);
-  //       },
-  //       { once: true }
-  //     );
-  //   });
+      canvas.removeEventListener("mousemove", (e) =>
+        recoilService.updateCursorPosition(e)
+      );
+    }
+  });
 }
