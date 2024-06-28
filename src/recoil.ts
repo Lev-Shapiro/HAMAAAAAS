@@ -1,24 +1,37 @@
 export class RecoilService {
-  isRecoiling = false;
   recoilDistance = 10;
 
+  centerX: number;
+  centerY: number;
+  cursorX: number
+  cursorY: number;
+
   constructor(
+    private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
-    public cursorX: number,
-    public cursorY: number,
-  ) {}
+  ) {
+    this.centerX = this.canvas.width / 2;
+    this.centerY = this.canvas.height / 2;
+  
+    this.cursorX = this.centerX;
+    this.cursorY = this.centerY;
+  }
 
   drawCursor() {
     this.ctx.beginPath();
-    this.ctx.arc(this.cursorX, this.cursorY, 5, 0, Math.PI * 2);
-    this.ctx.fillStyle = "black";
-    this.ctx.fill();
+    const img = new Image();
+    img.src = "/cursor.png";
+    this.ctx.drawImage(img, this.cursorX - 5, this.cursorY - 5, 20, 20);
   }
 
   updateCursorPosition({ movementX, movementY }: MouseEvent) {
-    console.log(movementX, movementY);
     this.cursorX += movementX;
     this.cursorY += movementY;
+
+    if(this.cursorX < 0) this.cursorX = 20;
+    if(this.cursorX > this.canvas.width) this.cursorX = this.canvas.width - 20;
+    if(this.cursorY < 0) this.cursorY = 20;
+    if(this.cursorY > this.canvas.height) this.cursorY = this.canvas.height - 20;
   }
 
   recoil() {
