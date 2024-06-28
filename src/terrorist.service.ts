@@ -1,3 +1,5 @@
+import { DataModel } from "./data/data.model";
+
 interface TerrroristOptions {
   speed: number;
   width: number;
@@ -18,7 +20,8 @@ export class TerroristService {
   constructor(
     private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
-    private options: TerrroristOptions
+    private options: TerrroristOptions,
+    private healthInfo: DataModel
   ) {}
 
   drawTerrorist(terrorist: Terrorist) {
@@ -37,6 +40,7 @@ export class TerroristService {
     for (let i = this.terrorists.length - 1; i >= 0; i--) {
       this.terrorists[i].y += this.terrorists[i].speed;
       if (this.terrorists[i].y > this.canvas.height * 0.83) {
+        this.healthInfo.data.value -= 1;
         this.terrorists.splice(i, 1);
       }
     }
