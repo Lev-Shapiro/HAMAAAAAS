@@ -1,4 +1,7 @@
+import { BulletService } from "./bullet.service";
+import { DataModel } from "./data/data.model";
 import "./style.css";
+import { TerroristService } from "./terrorist.service";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game")!;
 if (!canvas) {
@@ -10,97 +13,41 @@ if (!ctx) {
   throw new Error("Could not get 2d context");
 }
 
-const bulletImage = new Image();
-bulletImage.src = "/bullet.webp";
-
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-interface Square {
-  x: number;
-  y: number;
-  size: number;
-  speed: number;
-}
+const ammoLeftInfo = new DataModel(canvas, ctx, {
+  value: 0,
+  icon: "/bullet.webp",
+})
 
-interface Bullet {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  speedX: number;
-  speedY: number;
-  angle: number;
-}
+const bulletService = new BulletService(canvas, ctx, {
+  speed: 10,
+  width: 10,
+  height: 30,
+  capacity: 30,
+  rearmTime: 1000,
+}, ammoLeftInfo);
 
-const squares: Square[] = [];
-const bullets: Bullet[] = [];
+const terroristService = new TerroristService(canvas, ctx, {
+  speed: 0.5,
+  width: 20,
+  height: 20,
+});
 
-function spawnRedSquares(count: number) {
-  for (let i = 0; i < count; i++) {
-    const square: Square = {
-      x: Math.random() * canvas.width,
-      y: 50 + Math.random() * 50,
-      size: 20,
-      speed: 2,
-    };
-    squares.push(square);
-  }
-}
-
-function drawSquare(square: Square) {
-  ctx.fillStyle = "red";
-  ctx.fillRect(square.x, square.y, square.size, square.size);
-}
-
-function updateSquares() {
-  for (let i = squares.length - 1; i >= 0; i--) {
-    squares[i].y += squares[i].speed;
-    if (squares[i].y > 700) {
-      squares.splice(i, 1);
-    }
-  }
-}
-
-function drawBullet(bullet: Bullet) {
-  ctx.save();
-  ctx.translate(bullet.x, bullet.y);
-  ctx.rotate(bullet.angle);
-  ctx.drawImage(
-    bulletImage,
-    -bullet.width / 2,
-    -bullet.height / 2,
-    bullet.width,
-    bullet.height
-  );
-  ctx.restore();
-  // ctx.drawImage(bulletImage, bullet.x - bullet.width / 2, bullet.y - bullet.height, bullet.width, bullet.height);
-}
-
-function updateTriangles() {
-  for (let i = bullets.length - 1; i >= 0; i--) {
-    bullets[i].x += bullets[i].speedX;
-    bullets[i].y += bullets[i].speedY;
-    if (
-      bullets[i].x < 0 ||
-      bullets[i].x > canvas.width ||
-      bullets[i].y > canvas.height
-    ) {
-      bullets.splice(i, 1);
-    }
-  }
-}
 
 function checkCollisions() {
-  for (let i = squares.length - 1; i >= 0; i--) {
+  const bullets = bulletService.bullets, terrorists = terroristService.terrorists;
+
+  for (let i = terrorists.length - 1; i >= 0; i--) {
     for (let j = bullets.length - 1; j >= 0; j--) {
       if (
-        squares[i].x < bullets[j].x + bullets[j].width / 2 &&
-        squares[i].x + squares[i].size > bullets[j].x - bullets[j].width / 2 &&
-        squares[i].y < bullets[j].y + bullets[j].height &&
-        squares[i].y + squares[i].size > bullets[j].y
+        terrorists[i].x < bullets[j].x + bullets[j].width / 2 &&
+        terrorists[i].x + terrorists[i].width > bullets[j].x - bullets[j].width / 2 &&
+        terrorists[i].y < bullets[j].y + bullets[j].height &&
+        terrorists[i].y + terrorists[i].height > bullets[j].y
       ) {
-        squares.splice(i, 1);
+        terrorists.splice(i, 1);
         bullets.splice(j, 1);
         break;
       }
@@ -121,18 +68,8 @@ canvas.addEventListener("mousedown", (event) => {
     const dy = targetY - canvas.height;
 
     const angle = Math.atan2(dy, dx);
-    const speed = 10;
 
-    const bullet: Bullet = {
-      x: canvas.width / 2,
-      y: canvas.height,
-      width: 10,
-      height: 50,
-      speedX: speed * Math.cos(angle),
-      speedY: speed * Math.sin(angle),
-      angle: angle + Math.PI / 2,
-    };
-    bullets.push(bullet);
+    bulletService.spawnBullet(canvas.width / 2, canvas.height, angle);
   }, 100);
 
   const mouseMoveHandler = (moveEvent: MouseEvent) => {
@@ -155,21 +92,46 @@ canvas.addEventListener("mousedown", (event) => {
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  updateSquares();
-  updateTriangles();
+  terroristService.rerenderTerrorists();
+  bulletService.rerenderBullets();
+  // drawAmmoBox();
   checkCollisions();
 
-  for (const square of squares) {
-    drawSquare(square);
-  }
-
-  for (const bullet of bullets) {
-    drawBullet(bullet);
-  }
+  ammoLeftInfo.drawData(0);
+  terroristService.drawAllTerrorists();
+  bulletService.drawAllBullets();
 
   requestAnimationFrame(gameLoop);
 }
 
+// Function to draw the ammo box
+// function drawAmmoBox() {
+//   const ammoText = `Ammo Left: ${bulletService.ammoLeft}`;
+//   ctx.font = "20px Arial";
+//   ctx.fillStyle = "white";
+//   ctx.textAlign = "right";
+//   ctx.textBaseline = "top";
+
+//   // Box background
+//   const padding = 10;
+//   const textWidth = ctx.measureText(ammoText).width;
+//   const boxWidth = textWidth + padding * 2;
+//   const boxHeight = 40;
+//   ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; // Semi-transparent background
+//   ctx.fillRect(canvas.width - boxWidth - padding, padding, boxWidth, boxHeight);
+
+//   // Ammo text
+//   ctx.fillStyle = "white";
+//   ctx.fillText(ammoText, canvas.width - 2*padding, boxHeight / 2);
+// }
+
+// When user presses R, reload
+document.addEventListener("keydown", (event) => {
+  if (event.key === "r") {
+    bulletService.reload();
+  }
+});
+
 // Initial spawn
-spawnRedSquares(10);
+// terroristService.spawnTerrorists(10);
 gameLoop();
