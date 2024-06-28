@@ -112,5 +112,5 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Initial spawn
-terroristService.spawnTerrorists(50);
+// terroristService.spawnTerrorists(50);
 gameLoop();

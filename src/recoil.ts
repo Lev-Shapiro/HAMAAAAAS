@@ -16,6 +16,7 @@ export class RecoilService {
   }
 
   updateCursorPosition({ movementX, movementY }: MouseEvent) {
+    console.log(movementX, movementY);
     this.cursorX += movementX;
     this.cursorY += movementY;
   }

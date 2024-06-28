@@ -8,6 +8,14 @@ export async function handleMouseInteract(
 ) {
   let interval: number;
 
+  function handleMouseMove(e: MouseEvent) {
+    recoilService.updateCursorPosition(e);
+  }
+
+  function handleMouseUp() {
+    clearInterval(interval);
+  }
+
   const handleShootAttempt = () => {
     interval = setInterval(() => {
       const dx = recoilService.cursorX - canvas.width / 2;
@@ -19,7 +27,7 @@ export async function handleMouseInteract(
       recoilService.recoil();
     }, 100);
 
-    canvas.addEventListener("mouseup", () => clearInterval(interval), {
+    canvas.addEventListener("mouseup", handleMouseUp, {
       once: true,
     });
   };
@@ -28,26 +36,19 @@ export async function handleMouseInteract(
     canvas.requestPointerLock();
 
     canvas.addEventListener("mousedown", handleShootAttempt);
-    canvas.addEventListener("mousemove", (e) =>
-      recoilService.updateCursorPosition(e)
-    );
+    canvas.addEventListener("mousemove", handleMouseMove);
   });
 
   canvas.addEventListener("pointerlockchange", () => {
     if (document.pointerLockElement === canvas) {
       // ** Pointer lock is active
-
-      
-    } else{
+    } else {
       // ** Pointer lock is no longer active
 
       canvas.removeEventListener("click", handleShootAttempt);
       canvas.removeEventListener("mousedown", handleShootAttempt);
-      canvas.removeEventListener("mouseup", () => clearInterval(interval));
-
-      canvas.removeEventListener("mousemove", (e) =>
-        recoilService.updateCursorPosition(e)
-      );
+      canvas.removeEventListener("mouseup", handleMouseUp);
+      canvas.removeEventListener("mousemove", handleMouseMove);
     }
   });
 }
