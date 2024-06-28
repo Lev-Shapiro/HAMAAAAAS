@@ -1,5 +1,6 @@
 import { BulletService } from "./bullet.service";
 import { DataModel } from "./data/data.model";
+import { handleMenu } from "./handle-menu";
 import { handleMouseInteract } from "./mouse-interact";
 import { RecoilService } from "./recoil";
 import "./style.css";
@@ -84,8 +85,6 @@ function checkCollisions() {
   }
 }
 
-handleMouseInteract(canvas, recoilService, bulletService);
-
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -117,4 +116,13 @@ document.addEventListener("keydown", (event) => {
 //     terroristService.spawnTerrorists(10);
 //   }
 // }, 5000)
-gameLoop();
+
+
+const { drawModal } = handleMenu(canvas, ctx, () => {
+  handleMouseInteract(canvas, recoilService, bulletService);
+  gameLoop();
+
+  terroristService.spawnTerrorists(10);
+});
+
+drawModal();

@@ -32,20 +32,13 @@ export async function handleMouseInteract(
     });
   };
 
-  canvas.addEventListener("click", () => {
-    canvas.requestPointerLock();
-
-    canvas.addEventListener("mousedown", handleShootAttempt);
-    canvas.addEventListener("mousemove", handleMouseMove);
-  });
+  canvas.addEventListener("mousedown", handleShootAttempt);
+  canvas.addEventListener("mousemove", handleMouseMove);
 
   canvas.addEventListener("pointerlockchange", () => {
-    if (document.pointerLockElement === canvas) {
-      // ** Pointer lock is active
-    } else {
+    if (document.pointerLockElement !== canvas) {
       // ** Pointer lock is no longer active
 
-      canvas.removeEventListener("click", handleShootAttempt);
       canvas.removeEventListener("mousedown", handleShootAttempt);
       canvas.removeEventListener("mouseup", handleMouseUp);
       canvas.removeEventListener("mousemove", handleMouseMove);
