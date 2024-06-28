@@ -19,6 +19,15 @@ canvas.height = window.innerHeight;
 const ammoLeftInfo = new DataModel(canvas, ctx, {
   value: 0,
   icon: "/bullet.webp",
+  iconWidth: 12,
+  iconHeight: 30,
+})
+
+const healthInfo = new DataModel(canvas, ctx, {
+  value: 100,
+  icon: "/heart.webp",
+  iconWidth: 30,
+  iconHeight: 30,
 })
 
 const bulletService = new BulletService(canvas, ctx, {
@@ -98,6 +107,7 @@ function gameLoop() {
   checkCollisions();
 
   ammoLeftInfo.drawData(0);
+  healthInfo.drawData(1);
   terroristService.drawAllTerrorists();
   bulletService.drawAllBullets();
 
