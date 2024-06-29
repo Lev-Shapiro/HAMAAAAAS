@@ -39,14 +39,14 @@ export async function handleUserMouseInput(
     }
   }
 
+  canvas.addEventListener("mousedown", handleShootAttempt);
+  canvas.addEventListener("mousemove", handleMouseMove);
+
+  document.addEventListener("keydown", handleKeyPress);
+  
   function handleLock() {
     if (document.pointerLockElement === canvas) {
       // ** Pointer lock is active
-
-      canvas.addEventListener("mousedown", handleShootAttempt);
-      canvas.addEventListener("mousemove", handleMouseMove);
-
-      document.addEventListener("keydown", handleKeyPress);
     } else {
       // ** Pointer lock is no longer active
       canvas.removeEventListener("mousedown", handleShootAttempt);

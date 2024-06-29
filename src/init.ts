@@ -1,6 +1,6 @@
 import { BulletService } from "./bullet.service";
 import { DataModel } from "./data/data.model";
-import { MenuService } from "./handle-open-main-menu";
+import { MenuService } from "./menu.service";
 import { RecoilService } from "./recoil";
 import { TerroristService } from "./terrorist.service";
 
