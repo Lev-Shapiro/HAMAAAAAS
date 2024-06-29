@@ -1,10 +1,11 @@
 import { BulletService } from "./bullet.service";
 import { RecoilService } from "./recoil";
 
-export async function handleMouseInteract(
+export async function handleUserMouseInput(
   canvas: HTMLCanvasElement,
   recoilService: RecoilService,
-  bulletService: BulletService
+  bulletService: BulletService,
+  handleExitGame: () => void
 ) {
   let interval: number;
 
@@ -31,17 +32,33 @@ export async function handleMouseInteract(
       once: true,
     });
   };
+  
+  function handleKeyPress(e: KeyboardEvent) {
+    if(e.key === "r") {
+      bulletService.reload();
+    }
+  }
 
-  canvas.addEventListener("mousedown", handleShootAttempt);
-  canvas.addEventListener("mousemove", handleMouseMove);
+  function handleLock() {
+    if (document.pointerLockElement === canvas) {
+      // ** Pointer lock is active
 
-  canvas.addEventListener("pointerlockchange", () => {
-    if (document.pointerLockElement !== canvas) {
+      canvas.addEventListener("mousedown", handleShootAttempt);
+      canvas.addEventListener("mousemove", handleMouseMove);
+
+      document.addEventListener("keydown", handleKeyPress);
+    } else {
       // ** Pointer lock is no longer active
-
       canvas.removeEventListener("mousedown", handleShootAttempt);
       canvas.removeEventListener("mouseup", handleMouseUp);
       canvas.removeEventListener("mousemove", handleMouseMove);
+
+      document.removeEventListener("keydown", handleKeyPress);
+      document.removeEventListener("pointerlockchange", handleLock);
+
+      handleExitGame();
     }
-  });
+  }
+
+  document.addEventListener("pointerlockchange", handleLock);
 }
