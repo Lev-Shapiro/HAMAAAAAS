@@ -7,11 +7,13 @@ export class Game extends GameServices {
     this.isGameActive = false;
 
     await this.menuService.waitUntilUserPressesContinue();
+
     this.handleStartGame();
   }
 
   handleStartGame() {
     this.isGameActive = true;
+    this.canvas.requestPointerLock();
 
     this.startGameLoop();
     handleUserMouseInput(
@@ -24,7 +26,7 @@ export class Game extends GameServices {
     );
   }
 
-  private startGameLoop() { 
+  private startGameLoop() {
     if (!this.isGameActive) return;
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -33,17 +35,17 @@ export class Game extends GameServices {
     this.terroristService.rerenderTerrorists();
     this.bulletService.rerenderBullets();
     this.checkCollisions();
-  
+
     // Infographics
     this.ammoLeftInfo.drawData(0);
     this.healthInfo.drawData(1);
     this.coinBank.drawData(2);
-  
+
     // Draw everything
     this.terroristService.drawAllTerrorists();
     this.bulletService.drawAllBullets();
     this.recoilService.drawCursor();
-  
+
     requestAnimationFrame(() => this.startGameLoop());
   }
 

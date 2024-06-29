@@ -32,9 +32,9 @@ export async function handleUserMouseInput(
       once: true,
     });
   };
-  
+
   function handleKeyPress(e: KeyboardEvent) {
-    if(e.key === "r") {
+    if (e.key === "r") {
       bulletService.reload();
     }
   }
@@ -49,6 +49,7 @@ export async function handleUserMouseInput(
       // ** Pointer lock is active
     } else {
       // ** Pointer lock is no longer active
+
       canvas.removeEventListener("mousedown", handleShootAttempt);
       canvas.removeEventListener("mouseup", handleMouseUp);
       canvas.removeEventListener("mousemove", handleMouseMove);

@@ -62,7 +62,14 @@ export class MenuService {
 
   handleCanvasClick() {
     return new Promise<void>((resolve) => {
-      const handleClick = (event: MouseEvent) => {
+      let lastSetupTime = 0;
+
+      const handleClick = async (event: MouseEvent) => {
+        const elapsedTime = Date.now() - lastSetupTime;
+        if (elapsedTime < 1500) {
+          await new Promise((r) => setTimeout(r, 1500 - elapsedTime));
+        }
+        
         const buttonX = (this.canvasW - this.BUTTON_WIDTH) / 2;
         const buttonY = (this.canvasH - this.BUTTON_HEIGHT) / 2 + 30;
 
@@ -75,12 +82,12 @@ export class MenuService {
           clickY >= buttonY &&
           clickY <= buttonY + this.BUTTON_HEIGHT
         ) {
-          this.canvas.requestPointerLock();
           this.canvas.removeEventListener("click", handleClick);
           resolve();
         }
       };
 
+      lastSetupTime = Date.now();
       this.canvas.addEventListener("click", handleClick);
     });
   }
