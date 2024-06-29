@@ -15,5 +15,4 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const game = new Game(canvas, ctx);
-game.terroristService.spawnTerrorists(10);
 game.handleMenu();

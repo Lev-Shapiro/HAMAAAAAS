@@ -2,6 +2,7 @@ import { BulletService } from "./bullet.service";
 import { DataModel } from "./data/data.model";
 import { MenuService } from "./menu.service";
 import { RecoilService } from "./recoil";
+import { TerroristWavesService } from "./terrorist-waves.service";
 import { TerroristService } from "./terrorist.service";
 
 export class GameServices {
@@ -12,6 +13,7 @@ export class GameServices {
   terroristService: TerroristService;
   coinBank: DataModel;
   menuService: MenuService;
+  terroristWaves: TerroristWavesService;
 
   constructor(
     public canvas: HTMLCanvasElement,
@@ -66,6 +68,8 @@ export class GameServices {
 
     const menuService = new MenuService(canvas, ctx);
 
+    const terroristWavesService = new TerroristWavesService(terroristService);
+
     this.ammoLeftInfo = ammoLeftInfo;
     this.healthInfo = healthInfo;
     this.coinBank = coinBank;
@@ -73,5 +77,6 @@ export class GameServices {
     this.recoilService = recoilService;
     this.terroristService = terroristService;
     this.menuService = menuService;
+    this.terroristWaves = terroristWavesService;
   }
 }

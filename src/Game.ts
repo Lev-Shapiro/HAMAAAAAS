@@ -16,6 +16,7 @@ export class Game extends GameServices {
     this.canvas.requestPointerLock();
 
     this.startGameLoop();
+    this.terroristWaves.handleWaves();
     handleUserMouseInput(
       this.canvas,
       this.recoilService,
