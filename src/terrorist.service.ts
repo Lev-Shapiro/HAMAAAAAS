@@ -25,8 +25,10 @@ export class TerroristService {
   ) {}
 
   drawTerrorist(terrorist: Terrorist) {
-    this.ctx.fillStyle = "red";
-    this.ctx.fillRect(terrorist.x, terrorist.y, terrorist.width, terrorist.height);
+    const image = new Image();
+    image.src = "/terrorist.gif";
+
+    this.ctx.drawImage(image, terrorist.x, terrorist.y, terrorist.width, terrorist.height);
   }
 
   drawAllTerrorists() {
@@ -50,7 +52,7 @@ export class TerroristService {
     for (let i = 0; i < count; i++) {
       const terorrist: Terrorist = {
         x: Math.random() * this.canvas.width,
-        y: 50 + Math.random() * 50,
+        y: this.canvas.height * (0.2 + (Math.random() * 0.1)),
         width: this.options.width,
         height: this.options.height,
         speed: this.options.speed,

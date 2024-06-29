@@ -59,16 +59,15 @@ export class GameServices {
       canvas,
       ctx,
       {
-        speed: 1,
-        width: 30,
-        height: 30,
+        speed: 0.2,
+        width: 35,
+        height: 70,
       },
       healthInfo
     );
 
     const menuService = new MenuService(canvas, ctx);
-
-    const terroristWavesService = new TerroristWavesService(terroristService);
+    const terroristWavesService = new TerroristWavesService(canvas, ctx, terroristService);
 
     this.ammoLeftInfo = ammoLeftInfo;
     this.healthInfo = healthInfo;
