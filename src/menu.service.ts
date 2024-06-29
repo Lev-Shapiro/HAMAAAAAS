@@ -64,7 +64,7 @@ export class MenuService {
     return new Promise<void>((resolve) => {
       const handleClick = (event: MouseEvent) => {
         const buttonX = (this.canvasW - this.BUTTON_WIDTH) / 2;
-        const buttonY = (this.canvasH - this.BUTTON_HEIGHT) / 2;
+        const buttonY = (this.canvasH - this.BUTTON_HEIGHT) / 2 + 30;
 
         const clickX = event.clientX;
         const clickY = event.clientY;
