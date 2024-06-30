@@ -13,7 +13,7 @@ UN - Unnecessary Need
 1. CO-OP
 2. Naked Sinwar running across buildings
 3. Military Shop (Soliders, Tanks, Warplanes, earnings per terrorist, etc.)
-4. Different Incoming Terrorists: hamas solider, hamas leader, putin (maybe), Hamas solider with a palestinian
+4. Different Incoming Terrorists: hamas solider, solider with a car, hamas leader, putin (maybe) or even hamas solider with a palestinian
 5. Terrorist health
 6. Different weaponry and ammunition
 7. Health regenration
