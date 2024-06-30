@@ -1,3 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+:root {
+  --vs-primary: 29 92 255;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,7 +10,7 @@
 }
 
 body {
-  background-image: url('/gaza.webp');
+  background-image: url("/gaza.webp");
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
@@ -13,4 +18,87 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Shop modal */
+
+dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  padding: 1rem 3rem;
+  background: white;
+  max-width: 400px;
+  padding-top: 2rem;
+  border-radius: 20px;
+  border: 0;
+  box-shadow: 0 5px 30px 0 #000;
+  animation: fadeIn 1s ease both;
+}
+dialog::backdrop {
+  animation: fadeIn 1s ease both;
+  z-index: 2;
+  backdrop-filter: blur(2px);
+}
+dialog .x {
+  filter: grayscale(1);
+  border: none;
+  background: none;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  transition: ease filter, transform 0.3s;
+  cursor: pointer;
+  transform-origin: center;
+}
+dialog .x:hover {
+  filter: grayscale(0);
+  transform: scale(1.1);
+}
+dialog h2 {
+  font-weight: 600;
+  font-size: 2rem;
+  padding-bottom: 1rem;
+}
+dialog p {
+  font-size: 1rem;
+  line-height: 1.3rem;
+  padding: 0.5rem 0;
+}
+dialog p a:visited {
+  color: #000;
+}
+/*General Styles*/
+button.openDialog {
+  position: absolute;
+  top: 80%;
+  left: 20%;
+  /* transform: translate(-50%, -50%); */
+
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #fff !important;
+  background: #000;
+  padding: 13px 25px;
+  border-radius: 17px;
+  transition: background-color 0.1s ease;
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0 10px 20px -10px #000;
+}
+button.openDialog:hover {
+  box-shadow: 0 20px 20px -10px #000;
+  transform: translateY(-5px);
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+ }
+  to {
+    opacity: 1;
+ }
 }

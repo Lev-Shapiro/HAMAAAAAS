@@ -16,4 +16,4 @@ canvas.height = window.innerHeight;
 
 const game = new Game(canvas, ctx);
 
-game.handleMenu()
+game.start()

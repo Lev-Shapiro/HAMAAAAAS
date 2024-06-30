@@ -3,7 +3,12 @@ import { GameServices } from "./init";
 
 export class Game extends GameServices {
   isGameActive = false;
-  async handleMenu() {
+
+  start() {
+    this.handleMenu();
+  }
+
+  private async handleMenu() {
     this.isGameActive = false;
 
     await this.menuService.waitUntilUserPressesContinue();
@@ -11,7 +16,7 @@ export class Game extends GameServices {
     this.handleStartGame();
   }
 
-  handleStartGame() {
+  private handleStartGame() {
     this.isGameActive = true;
     this.canvas.requestPointerLock();
 
