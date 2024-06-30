@@ -17,11 +17,13 @@ export class GameServices {
   menuService: MenuService;
   terroristWaves: TerroristWavesService;
   upgrades: GameUpgrades;
+  shopUI: ShopUI;
 
   constructor(
     public canvas: HTMLCanvasElement,
     public ctx: CanvasRenderingContext2D,
-    public shopUI: ShopUI
+    public shopModal: HTMLElement,
+    public shopItems: HTMLElement
   ) {
     const ammoLeftInfo = new DataModel(canvas, ctx, {
       value: 0,
@@ -38,7 +40,7 @@ export class GameServices {
     });
 
     const coinBank = new DataModel(canvas, ctx, {
-      value: 0,
+      value: 98,
       icon: "/coin.webp",
       iconWidth: 30,
       iconHeight: 30,
@@ -73,6 +75,8 @@ export class GameServices {
 
     const menuService = new MenuService(canvas, ctx);
     const terroristWavesService = new TerroristWavesService(terroristService);
+
+    const shopUI = new ShopUI(coinBank, shopModal, shopItems);
     
     this.ammoLeftInfo = ammoLeftInfo;
     this.healthInfo = healthInfo;
@@ -83,5 +87,6 @@ export class GameServices {
     this.menuService = menuService;
     this.terroristWaves = terroristWavesService;
     this.upgrades = upgrades
+    this.shopUI = shopUI
   }
 }

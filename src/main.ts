@@ -1,5 +1,4 @@
 import { Game } from "./Game";
-import { ShopUI } from "./shop-ui";
 import "./style.css";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game")!;
@@ -19,9 +18,7 @@ const shopModal = document.getElementById("modal-container")!;
 const shopItemsContainer = document.getElementById("shop-items")!;
 const modalClose = document.getElementById("modal-close")!;
 
-const shopUI = new ShopUI(shopModal, shopItemsContainer);
-
-const game = new Game(canvas, ctx, shopUI);
+const game = new Game(canvas, ctx, shopModal, shopItemsContainer);
 
 game.start()
 

@@ -134,7 +134,7 @@ body {
   margin: 8px 0;
 }
 
-.add-button {
+.upgrade-button {
   background-color: #b0e0e6;
   color: #212121;
   border: none;
@@ -144,6 +144,11 @@ body {
   cursor: pointer;
 }
 
-.add-button:hover {
+.upgrade-button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.upgrade-button:hover:not(:disabled) {
   background-color: #98d2d2;
 }

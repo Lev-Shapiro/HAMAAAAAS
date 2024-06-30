@@ -1,3 +1,4 @@
+import { DataModel } from "./data/data.model";
 import { UpgradeItem } from "./game-upgrades";
 
 interface ShopItem extends UpgradeItem {}
@@ -5,17 +6,20 @@ export class ShopUI {
   items: { [key: string]: ShopItem } = {};
 
   constructor(
+    private coinBank: DataModel,
     private modalContainer: HTMLElement,
     private itemsContainer: HTMLElement
   ) {}
 
   toggleModal(): void {
+    this.renderItems();
     this.modalContainer.classList.toggle("active");
   }
 
   openModalIfClosed(): void {
     if (!this.modalContainer.classList.contains("active")) {
       this.modalContainer.classList.add("active");
+      this.renderItems();
     }
   }
 
@@ -74,12 +78,19 @@ export class ShopUI {
 
       // Create and append the button
       const button = document.createElement("button");
-      button.className = "add-button";
+      button.className = "upgrade-button";
       button.textContent = "Upgrade";
-      button.onclick = () => {
-        this.upgradeItem(params.name);
-        this.renderItems();
-      };
+
+      if(this.coinBank.data.value >= cost) {
+        button.onclick = () => {
+          this.coinBank.data.value -= cost;
+          params.upgrade();
+          this.renderItems();
+        };
+      } else {
+        button.disabled = true;
+      }
+
       cardContent.appendChild(button);
     }
 
@@ -102,13 +113,5 @@ export class ShopUI {
 
   addItem(item: ShopItem): void {
     this.items[item.name] = item;
-  }
-
-  upgradeItem(name: string): void {
-    const item = this.items[name];
-
-    if (item) {
-      item.upgrade();
-    }
   }
 }
