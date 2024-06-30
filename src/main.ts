@@ -1,4 +1,5 @@
 import { Game } from "./Game";
+import { ShopUI } from "./shop-ui";
 import "./style.css";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game")!;
@@ -14,6 +15,17 @@ if (!ctx) {
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const game = new Game(canvas, ctx);
+const shopModal = document.getElementById("modal-container")!;
+const shopItemsContainer = document.getElementById("shop-items")!;
+const modalClose = document.getElementById("modal-close")!;
+
+const shopUI = new ShopUI(shopModal, shopItemsContainer);
+
+const game = new Game(canvas, ctx, shopUI);
 
 game.start()
+
+modalClose.addEventListener("click", () => {
+  game.shopUI.closeModalIfOpened();
+  game.continueGame();
+});

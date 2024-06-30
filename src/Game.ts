@@ -5,18 +5,30 @@ export class Game extends GameServices {
   isGameActive = false;
 
   start() {
+    this.syncShop();
     this.handleMenu();
   }
 
-  private async handleMenu() {
-    this.isGameActive = false;
+  syncShop() {
+    const upgrades = this.upgrades;
 
-    await this.menuService.waitUntilUserPressesContinue();
+    this.shopUI.addItem(upgrades.capacityItem);
+    this.shopUI.addItem(upgrades.reloadSpeedItem);
 
-    this.handleStartGame();
+    this.shopUI.renderItems();
   }
 
-  private handleStartGame() {
+  async handleMenu() {
+    this.isGameActive = false;
+    document.exitPointerLock();
+
+    this.shopUI.closeModalIfOpened();
+    await this.menuService.waitUntilUserPressesContinue();
+
+    this.continueGame();
+  }
+
+  continueGame() {
     this.isGameActive = true;
     this.canvas.requestPointerLock();
 
@@ -26,9 +38,8 @@ export class Game extends GameServices {
       this.canvas,
       this.recoilService,
       this.bulletService,
-      () => {
-        this.handleMenu();
-      }
+      () => this.openShop(),
+      () => this.handleMenu()
     );
   }
 
@@ -76,5 +87,11 @@ export class Game extends GameServices {
         }
       }
     }
+  }
+
+  private async openShop() {
+    document.exitPointerLock();
+    this.isGameActive = false;
+    this.shopUI.openModalIfClosed();
   }
 }

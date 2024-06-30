@@ -6,6 +6,11 @@ npm run dev
 open localhost:5173
 ```
 
+# Playing Manual
+- DO NOT press "esc" (Escape) during the game. it will fuck everything up irreversibly (until you reload)
+- To pause the game press "m" (Menu), progress will be saved and terrorists paused.
+- To open the shop press "s" (Shop), there you'll be able to buy improvements and all that kind of shit.
+
 # Ubiquitous Language
 UN - Unnecessary Need
 

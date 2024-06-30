@@ -51,7 +51,7 @@ export class TerroristService {
   spawnTerrorists(count: number) {
     for (let i = 0; i < count; i++) {
       const terorrist: Terrorist = {
-        x: Math.random() * this.canvas.width,
+        x: this.canvas.width * (0.1 + Math.random() * 0.8),
         y: this.canvas.height * (0.2 + (Math.random() * 0.1)),
         width: this.options.width,
         height: this.options.height,

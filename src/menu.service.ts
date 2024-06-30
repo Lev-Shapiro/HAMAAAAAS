@@ -25,7 +25,7 @@ export class MenuService {
     const modalHeight = 200;
     const modalX = (this.canvasW - modalWidth) / 2;
     const modalY = (this.canvasH - modalHeight) / 2;
-
+ 
     // Draw modal background
     ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
     ctx.fillRect(modalX, modalY, modalWidth, modalHeight);

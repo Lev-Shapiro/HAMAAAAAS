@@ -3,6 +3,7 @@ import { DataModel } from "./data/data.model";
 import { GameUpgrades } from "./game-upgrades";
 import { MenuService } from "./menu.service";
 import { RecoilService } from "./recoil";
+import { ShopUI } from "./shop-ui";
 import { TerroristWavesService } from "./terrorist-waves.service";
 import { TerroristService } from "./terrorist.service";
 
@@ -19,7 +20,8 @@ export class GameServices {
 
   constructor(
     public canvas: HTMLCanvasElement,
-    public ctx: CanvasRenderingContext2D
+    public ctx: CanvasRenderingContext2D,
+    public shopUI: ShopUI
   ) {
     const ammoLeftInfo = new DataModel(canvas, ctx, {
       value: 0,

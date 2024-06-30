@@ -5,7 +5,9 @@ export async function handleUserMouseInput(
   canvas: HTMLCanvasElement,
   recoilService: RecoilService,
   bulletService: BulletService,
-  handleExitGame: () => void
+  
+  handleToggleShop: () => void,
+  handleOpenMenu: () => void
 ) {
   let interval: number;
 
@@ -34,8 +36,22 @@ export async function handleUserMouseInput(
   };
 
   function handleKeyPress(e: KeyboardEvent) {
+    // M = Menu
+    if (e.key === "m") {
+      handleOpenMenu();
+      return;
+    }
+
+    // R = Reload
     if (e.key === "r") {
       bulletService.reload();
+      return;
+    }
+
+    // S = Shop
+    if(e.key === "s") {
+      handleToggleShop();
+      return;
     }
   }
 
@@ -56,8 +72,6 @@ export async function handleUserMouseInput(
 
       document.removeEventListener("keydown", handleKeyPress);
       document.removeEventListener("pointerlockchange", handleLock);
-
-      handleExitGame();
     }
   }
 

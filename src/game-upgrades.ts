@@ -21,7 +21,7 @@ export class UpgradeItem {
     }
   }
 
-  increaseLevel() {
+  upgrade() {
     if (this.level < this.maxLevel) {
       this.level++;
     }
@@ -33,6 +33,13 @@ export class UpgradeItem {
 
   get value() {
     return this.valuePerLevel[this.level - 1].value;
+  }
+
+  get upgradeCost() {
+    const nextItemPrice = this.valuePerLevel[this.level]
+    if(nextItemPrice === undefined) return null;
+
+    return nextItemPrice.price;
   }
 }
 
