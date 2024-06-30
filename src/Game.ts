@@ -6,7 +6,7 @@ export class Game extends GameServices {
 
   start() {
     this.syncShop();
-    this.handleMenu();
+    this.openMenu();
   }
 
   syncShop() {
@@ -16,16 +16,6 @@ export class Game extends GameServices {
     this.shopUI.addItem(upgrades.reloadSpeedItem);
 
     this.shopUI.renderItems();
-  }
-
-  async handleMenu() {
-    this.isGameActive = false;
-    document.exitPointerLock();
-
-    this.shopUI.closeModalIfOpened();
-    await this.menuService.waitUntilUserPressesContinue();
-
-    this.continueGame();
   }
 
   continueGame() {
@@ -39,7 +29,7 @@ export class Game extends GameServices {
       this.recoilService,
       this.bulletService,
       () => this.openShop(),
-      () => this.handleMenu()
+      () => this.openMenu()
     );
   }
 
@@ -93,5 +83,15 @@ export class Game extends GameServices {
     document.exitPointerLock();
     this.isGameActive = false;
     this.shopUI.openModalIfClosed();
+  }
+
+  async openMenu() {
+    this.isGameActive = false;
+    document.exitPointerLock();
+
+    this.shopUI.closeModalIfOpened();
+    await this.menuService.waitUntilUserPressesContinue();
+
+    this.continueGame();
   }
 }
