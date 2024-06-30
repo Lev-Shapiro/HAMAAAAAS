@@ -4,8 +4,6 @@ export class TerroristWavesService {
   currentWave = 1;
 
   constructor(
-    private canvas: HTMLCanvasElement,
-    private ctx: CanvasRenderingContext2D,
     private terroristService: TerroristService
   ) {}
 

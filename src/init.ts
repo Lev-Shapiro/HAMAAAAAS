@@ -1,5 +1,6 @@
 import { BulletService } from "./bullet.service";
 import { DataModel } from "./data/data.model";
+import { GameUpgrades } from "./game-upgrades";
 import { MenuService } from "./menu.service";
 import { RecoilService } from "./recoil";
 import { TerroristWavesService } from "./terrorist-waves.service";
@@ -14,6 +15,7 @@ export class GameServices {
   coinBank: DataModel;
   menuService: MenuService;
   terroristWaves: TerroristWavesService;
+  upgrades: GameUpgrades;
 
   constructor(
     public canvas: HTMLCanvasElement,
@@ -40,6 +42,8 @@ export class GameServices {
       iconHeight: 30,
     });
 
+    const upgrades = new GameUpgrades()
+
     const bulletService = new BulletService(
       canvas,
       ctx,
@@ -47,9 +51,8 @@ export class GameServices {
         speed: 10,
         width: 10,
         height: 30,
-        capacity: 30,
-        rearmTime: 1000,
       },
+      upgrades,
       ammoLeftInfo
     );
 
@@ -67,8 +70,8 @@ export class GameServices {
     );
 
     const menuService = new MenuService(canvas, ctx);
-    const terroristWavesService = new TerroristWavesService(canvas, ctx, terroristService);
-
+    const terroristWavesService = new TerroristWavesService(terroristService);
+    
     this.ammoLeftInfo = ammoLeftInfo;
     this.healthInfo = healthInfo;
     this.coinBank = coinBank;
@@ -77,5 +80,6 @@ export class GameServices {
     this.terroristService = terroristService;
     this.menuService = menuService;
     this.terroristWaves = terroristWavesService;
+    this.upgrades = upgrades
   }
 }
