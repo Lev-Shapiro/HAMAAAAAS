@@ -16,6 +16,10 @@ export class Game extends GameServices {
     this.shopUI.addItem(upgrades.capacityItem);
     this.shopUI.addItem(upgrades.reloadSpeedItem);
 
+    this.shopUI.addItem(upgrades.helicopter);
+    this.shopUI.addItem(upgrades.helicopterBulletReloadSpeed);
+    this.shopUI.addItem(upgrades.helicopterMissileReloadSpeed);
+
     this.shopUI.renderItems();
   }
 
