@@ -68,13 +68,13 @@ export class GameServices {
       ctx,
       {
         [TerroristType.SOLIDER]: {
-          speed: 0.5,
+          speed: 50,
           health: 100,
           width: 35,
           height: 70,
         },
         [TerroristType.CAR_TERRORIST]: {
-          speed: 1,
+          speed: 75,
           health: 500,
           width: 70,
           height: 70,

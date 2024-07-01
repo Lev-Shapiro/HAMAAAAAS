@@ -12,6 +12,7 @@ export class Game extends GameServices {
   syncShop() {
     const upgrades = this.upgrades;
 
+    this.shopUI.addItem(upgrades.damageItem);
     this.shopUI.addItem(upgrades.capacityItem);
     this.shopUI.addItem(upgrades.reloadSpeedItem);
 

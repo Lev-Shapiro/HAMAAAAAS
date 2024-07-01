@@ -8,7 +8,7 @@ type TerroristInformation = {
     width: number;
     height: number;
   };
-}
+};
 
 interface Terrorist {
   type: TerroristType;
@@ -45,7 +45,8 @@ export class TerroristService {
     this.ctx.fillRect(
       terrorist.x,
       terrorist.y - 10,
-      terrorist.width * (terrorist.health / this.terroristInfo[terrorist.type].health),
+      terrorist.width *
+        (terrorist.health / this.terroristInfo[terrorist.type].health),
       5
     );
 
@@ -68,7 +69,9 @@ export class TerroristService {
 
   rerenderTerrorists() {
     for (let i = this.terrorists.length - 1; i >= 0; i--) {
-      this.terrorists[i].y += this.terrorists[i].speed;
+      // Let's assume that 100mph = 1px per second
+      this.terrorists[i].y += this.terrorists[i].speed / 100;
+
       if (this.terrorists[i].y > this.canvas.height * 0.83) {
         this.healthInfo.data.value -= 1;
         this.terrorists.splice(i, 1);

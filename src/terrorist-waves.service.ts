@@ -3,15 +3,19 @@ import { TerroristService } from "./terrorist.service";
 export class TerroristWavesService {
   currentWave = 1;
 
-  constructor(
-    private terroristService: TerroristService
-  ) {}
+  constructor(private terroristService: TerroristService) {}
 
   handleWaves() {
-    if (this.terroristService.terrorists.length === 0) {
+    const totalTerrorists = this.terroristService.terrorists.length;
+    if (totalTerrorists === 0) {
       this.presentWave();
-      // this.terroristService.spawnTerrorists(this.currentWave * 2);
-      this.terroristService.spawnCarTerrorists(this.currentWave * 2);
+      this.terroristService.spawnTerrorists(this.currentWave * 2);
+
+      if (this.currentWave > 10) {
+        this.terroristService.spawnCarTerrorists(
+          Math.floor(this.currentWave / 10) + Math.round(Math.random() * 1)
+        );
+      }
       this.currentWave++;
     }
 
