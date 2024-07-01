@@ -1,12 +1,18 @@
 import { DataModel } from "./data/data.model";
+import { TerroristType } from "./terrorist-type.enum";
 
-interface TerrroristOptions {
-  speed: number;
-  width: number;
-  height: number;
+type TerroristInformation = {
+  [key in TerroristType]: {
+    speed: number;
+    health: number;
+    width: number;
+    height: number;
+  };
 }
 
 interface Terrorist {
+  type: TerroristType;
+
   x: number;
   y: number;
   width: number;
@@ -21,22 +27,36 @@ export class TerroristService {
   constructor(
     private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
-    private options: TerrroristOptions,
+    private terroristInfo: TerroristInformation,
     private healthInfo: DataModel
   ) {}
 
   drawTerrorist(terrorist: Terrorist) {
     const image = new Image();
-    image.src = "/terrorist.gif";
+    image.src =
+      terrorist.type === TerroristType.CAR_TERRORIST
+        ? "/terrorist_wcar.png"
+        : "/terrorist.gif";
 
     // Draw health bar
     this.ctx.fillStyle = "red";
     this.ctx.fillRect(terrorist.x, terrorist.y - 10, terrorist.width, 5);
     this.ctx.fillStyle = "green";
-    this.ctx.fillRect(terrorist.x, terrorist.y - 10, terrorist.width * (terrorist.health / 100), 5);
+    this.ctx.fillRect(
+      terrorist.x,
+      terrorist.y - 10,
+      terrorist.width * (terrorist.health / this.terroristInfo[terrorist.type].health),
+      5
+    );
 
     // Draw terrorist
-    this.ctx.drawImage(image, terrorist.x, terrorist.y, terrorist.width, terrorist.height);
+    this.ctx.drawImage(
+      image,
+      terrorist.x,
+      terrorist.y,
+      terrorist.width,
+      terrorist.height
+    );
   }
 
   drawAllTerrorists() {
@@ -59,15 +79,30 @@ export class TerroristService {
   spawnTerrorists(count: number) {
     for (let i = 0; i < count; i++) {
       const terorrist: Terrorist = {
-        x: this.canvas.width * (0.1 + Math.random() * 0.8),
-        y: this.canvas.height * (0.2 + (Math.random() * 0.1)),
-        width: this.options.width,
-        height: this.options.height,
-        speed: this.options.speed,
-        health: 100,
+        type: TerroristType.SOLIDER,
+        ...this.getTerroristOptions(TerroristType.SOLIDER),
       };
 
       this.terrorists.push(terorrist);
     }
+  }
+
+  spawnCarTerrorists(count: number) {
+    for (let i = 0; i < count; i++) {
+      const terorrist: Terrorist = {
+        type: TerroristType.CAR_TERRORIST,
+        ...this.getTerroristOptions(TerroristType.CAR_TERRORIST),
+      };
+
+      this.terrorists.push(terorrist);
+    }
+  }
+
+  private getTerroristOptions(type: TerroristType) {
+    return {
+      x: this.canvas.width * (0.1 + Math.random() * 0.8),
+      y: this.canvas.height * (0.2 + Math.random() * 0.1),
+      ...this.terroristInfo[type],
+    };
   }
 }

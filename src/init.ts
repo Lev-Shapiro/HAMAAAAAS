@@ -4,6 +4,7 @@ import { GameUpgrades } from "./game-upgrades";
 import { MenuService } from "./menu.service";
 import { RecoilService } from "./recoil";
 import { ShopUI } from "./shop-ui";
+import { TerroristType } from "./terrorist-type.enum";
 import { TerroristWavesService } from "./terrorist-waves.service";
 import { TerroristService } from "./terrorist.service";
 
@@ -46,7 +47,7 @@ export class GameServices {
       iconHeight: 30,
     });
 
-    const upgrades = new GameUpgrades()
+    const upgrades = new GameUpgrades();
 
     const bulletService = new BulletService(
       canvas,
@@ -66,9 +67,18 @@ export class GameServices {
       canvas,
       ctx,
       {
-        speed: 0.2,
-        width: 35,
-        height: 70,
+        [TerroristType.SOLIDER]: {
+          speed: 0.5,
+          health: 100,
+          width: 35,
+          height: 70,
+        },
+        [TerroristType.CAR_TERRORIST]: {
+          speed: 1,
+          health: 500,
+          width: 70,
+          height: 70,
+        },
       },
       healthInfo
     );
@@ -77,7 +87,7 @@ export class GameServices {
     const terroristWavesService = new TerroristWavesService(terroristService);
 
     const shopUI = new ShopUI(coinBank, shopModal, shopItems);
-    
+
     this.ammoLeftInfo = ammoLeftInfo;
     this.healthInfo = healthInfo;
     this.coinBank = coinBank;
@@ -86,7 +96,7 @@ export class GameServices {
     this.terroristService = terroristService;
     this.menuService = menuService;
     this.terroristWaves = terroristWavesService;
-    this.upgrades = upgrades
-    this.shopUI = shopUI
+    this.upgrades = upgrades;
+    this.shopUI = shopUI;
   }
 }

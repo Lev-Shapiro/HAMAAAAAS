@@ -10,7 +10,8 @@ export class TerroristWavesService {
   handleWaves() {
     if (this.terroristService.terrorists.length === 0) {
       this.presentWave();
-      this.terroristService.spawnTerrorists(this.currentWave * 2);
+      // this.terroristService.spawnTerrorists(this.currentWave * 2);
+      this.terroristService.spawnCarTerrorists(this.currentWave * 2);
       this.currentWave++;
     }
 
