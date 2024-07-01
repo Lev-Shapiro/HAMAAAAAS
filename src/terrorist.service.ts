@@ -12,6 +12,7 @@ interface Terrorist {
   width: number;
   height: number;
   speed: number;
+  health: number;
 }
 
 export class TerroristService {
@@ -28,6 +29,13 @@ export class TerroristService {
     const image = new Image();
     image.src = "/terrorist.gif";
 
+    // Draw health bar
+    this.ctx.fillStyle = "red";
+    this.ctx.fillRect(terrorist.x, terrorist.y - 10, terrorist.width, 5);
+    this.ctx.fillStyle = "green";
+    this.ctx.fillRect(terrorist.x, terrorist.y - 10, terrorist.width * (terrorist.health / 100), 5);
+
+    // Draw terrorist
     this.ctx.drawImage(image, terrorist.x, terrorist.y, terrorist.width, terrorist.height);
   }
 
@@ -56,6 +64,7 @@ export class TerroristService {
         width: this.options.width,
         height: this.options.height,
         speed: this.options.speed,
+        health: 100,
       };
 
       this.terrorists.push(terorrist);

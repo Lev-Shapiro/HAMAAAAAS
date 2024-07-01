@@ -61,18 +61,25 @@ export class Game extends GameServices {
       terrorists = this.terroristService.terrorists;
 
     for (let i = terrorists.length - 1; i >= 0; i--) {
-      for (let j = bullets.length - 1; j >= 0; j--) {
-        if (
-          terrorists[i].x < bullets[j].x + bullets[j].width / 2 &&
-          terrorists[i].x + terrorists[i].width >
-            bullets[j].x - bullets[j].width / 2 &&
-          terrorists[i].y < bullets[j].y + bullets[j].height &&
-          terrorists[i].y + terrorists[i].height > bullets[j].y
-        ) {
-          terrorists.splice(i, 1);
-          bullets.splice(j, 1);
+      const terrorist = terrorists[i];
 
-          this.coinBank.data.value += 1;
+      for (let j = bullets.length - 1; j >= 0; j--) {
+        const bullet = bullets[j];
+
+        if (
+          terrorist.x < bullet.x + bullet.width / 2 &&
+          terrorist.x + terrorist.width > bullet.x - bullet.width / 2 &&
+          terrorist.y < bullet.y + bullet.height &&
+          terrorist.y + terrorist.height > bullet.y
+        ) {
+          if (terrorist.health > bullet.damage) {
+            terrorist.health -= bullet.damage;
+          } else {
+            terrorists.splice(i, 1);
+            this.coinBank.data.value += 1;
+          }
+          
+          bullets.splice(j, 1);
           break;
         }
       }

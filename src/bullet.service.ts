@@ -15,6 +15,7 @@ export interface Bullet {
   speedX: number;
   speedY: number;
   angle: number;
+  damage: number;
 }
 
 export class BulletService {
@@ -90,6 +91,7 @@ export class BulletService {
       speedX: Math.cos(angle) * this.options.speed,
       speedY: Math.sin(angle) * this.options.speed,
       angle: angle + Math.PI / 2,
+      damage: this.gameUpgrades.damageItem.value,
     };
 
     this.bullets.push(bullet);

@@ -102,4 +102,29 @@ export class GameUpgrades {
         },
     ]
   )
+
+  damageItem = new UpgradeItem(
+    "Damage",
+    4,
+    "/damage.webp",
+    "Increase damage of your gun",
+    [
+        {
+            value: 35,
+            price: 0
+        },
+        {
+            value: 60,
+            price: 75
+        },
+        {
+            value: 90,
+            price: 150
+        },
+        {
+            value: 120,
+            price: 300
+        },
+    ]
+  )
 }
