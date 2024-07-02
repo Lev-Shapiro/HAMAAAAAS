@@ -198,4 +198,17 @@ export class GameUpgrades {
       },
     ]
   );
+
+  helicopterMissileDamage = new UpgradeItem(
+    "Helicopter Missile Damage",
+    1,
+    "/helicopter.png",
+    "Increase missile damage of a helicopter",
+    [
+      {
+        value: 850,
+        price: 0,
+      },
+    ]
+  );
 }

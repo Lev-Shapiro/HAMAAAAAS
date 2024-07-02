@@ -1,10 +1,10 @@
 import { DataModel } from "../data/data.model";
 import { GameUpgrades } from "../game-upgrades";
-import { BulletService } from "./bullet.service";
+import { BallisticObjectService } from "../missile/ballistic-object.service";
 
 export class UserBulletService {
   constructor(
-    private bulletService: BulletService,
+    private bulletService: BallisticObjectService,
     private ammoLeftInfo: DataModel,
     private gameUpgrades: GameUpgrades
   ) {
@@ -22,7 +22,7 @@ export class UserBulletService {
       throw new Error("No more ammo left");
     }
 
-    this.bulletService.spawnBullet(x, y, angle);
+    this.bulletService.spawnBallisticObject(x, y, angle);
     this.ammoLeftInfo.data.value--;
   }
 }

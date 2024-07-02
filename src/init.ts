@@ -1,10 +1,12 @@
-import { BulletService } from "./bullet/bullet.service";
 import { HelicopterBulletService } from "./bullet/helicopter-bullet.service";
 import { UserBulletService } from "./bullet/user-bullet.service";
 import { DataModel } from "./data/data.model";
+import { DynamicState, DynamicType } from "./dynamic-state";
 import { GameUpgrades } from "./game-upgrades";
 import { HelicopterService } from "./helicopter.service";
 import { MenuService } from "./menu.service";
+import { BallisticObjectService } from "./missile/ballistic-object.service";
+import { HelicopterMissileService } from "./missile/helicopter-missile.service";
 import { RecoilService } from "./recoil";
 import { ShopUI } from "./shop-ui";
 import { TerroristType } from "./terrorist-type.enum";
@@ -15,15 +17,18 @@ export class GameServices {
   ammoLeftInfo: DataModel;
   healthInfo: DataModel;
   recoilService: RecoilService;
-  bulletService: BulletService;
+  bulletService: BallisticObjectService;
+  missileService: BallisticObjectService;
   userBulletService: UserBulletService;
   terroristService: TerroristService;
   coinBank: DataModel;
   menuService: MenuService;
   terroristWaves: TerroristWavesService;
   upgrades: GameUpgrades;
+  dynamicState: DynamicState;
   helicopterService: HelicopterService;
   helicopterBulletService: HelicopterBulletService;
+  helicopterMissileService: HelicopterMissileService;
   shopUI: ShopUI;
 
   constructor(
@@ -55,18 +60,39 @@ export class GameServices {
 
     const upgrades = new GameUpgrades();
 
-    const bulletService = new BulletService(
+    const dynamicState = new DynamicState(upgrades);
+
+    const bulletService = new BallisticObjectService(
       canvas,
       ctx,
       {
-        speed: 10,
         width: 10,
         height: 30,
+        image: "/bullet.webp",
+        speed: 10,
+        damageKeyReference: DynamicType.MissileDamage,
       },
-      upgrades,
+      dynamicState
     );
 
-    const userBulletService = new UserBulletService(bulletService, ammoLeftInfo, upgrades);
+    const missileService = new BallisticObjectService(
+      canvas,
+      ctx,
+      {
+        width: 251 / 4,
+        height: 52 / 4,
+        image: "/missile.webp",
+        speed: 12,
+        damageKeyReference: DynamicType.MissileDamage,
+      },
+      dynamicState
+    );
+
+    const userBulletService = new UserBulletService(
+      bulletService,
+      ammoLeftInfo,
+      upgrades
+    );
 
     const recoilService = new RecoilService(canvas, ctx);
 
@@ -97,12 +123,24 @@ export class GameServices {
     });
 
     const helicopterBulletService = new HelicopterBulletService(
+      canvas,
       upgrades,
       terroristService,
       helicopterService,
       bulletService,
       {
-        capaity: 100,
+        capacity: 24,
+      }
+    );
+
+    const helicopterMissileService = new HelicopterMissileService(
+      canvas,
+      upgrades,
+      terroristService,
+      helicopterService,
+      missileService,
+      {
+        capacity: 1,
       }
     );
 
@@ -115,6 +153,7 @@ export class GameServices {
     this.healthInfo = healthInfo;
     this.coinBank = coinBank;
     this.bulletService = bulletService;
+    this.missileService = missileService;
     this.userBulletService = userBulletService;
     this.recoilService = recoilService;
     this.terroristService = terroristService;
@@ -123,6 +162,8 @@ export class GameServices {
     this.upgrades = upgrades;
     this.helicopterService = helicopterService;
     this.helicopterBulletService = helicopterBulletService;
+    this.helicopterMissileService = helicopterMissileService;
     this.shopUI = shopUI;
+    this.dynamicState = dynamicState;
   }
 }

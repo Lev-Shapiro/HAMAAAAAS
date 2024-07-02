@@ -1,38 +1,47 @@
 import { GameUpgrades } from "../game-upgrades";
 import { Helicopter, HelicopterService } from "../helicopter.service";
-import { BallisticObjectService } from "../missile/ballistic-object.service";
 import { Terrorist, TerroristService } from "../terrorist.service";
+import { BallisticObjectService } from "./ballistic-object.service";
 
-interface HelicopterBulletOptions {
+// TODO: Make this service more generic (appropriate for both bullets and missiles)
+
+interface HelicopterMissileOptions {
   capacity: number;
 }
-export class HelicopterBulletService {
+
+export class HelicopterMissileService {
   constructor(
     private canvas: HTMLCanvasElement,
     private gameUpgrades: GameUpgrades,
     private terroristService: TerroristService,
     private helicopterService: HelicopterService,
-    private bulletService: BallisticObjectService,
-    private options: HelicopterBulletOptions
+    private missileService: BallisticObjectService,
+    private options: HelicopterMissileOptions
   ) {}
 
   reload() {
     // TODO: Prevent it from reloading when the game is paused (clearInterval at some point)
     setInterval(() => {
-      this.spawnAllBullets();
-    }, this.gameUpgrades.helicopterBulletReloadSpeed.value);
+      this.spawnAllMissiles();
+    }, this.gameUpgrades.helicopterMissileReloadSpeed.value);
   }
 
-  spawnBullet(helicopter: Helicopter, targetX: number, targetY: number) {
-    const bulletAngle = Math.atan2(
+  spawnMissile(helicopter: Helicopter, targetX: number, targetY: number) {
+    const missileAngle = Math.atan2(
       targetY - helicopter.y,
       targetX - helicopter.x
     );
 
-    this.bulletService.spawnBallisticObject(helicopter.x, helicopter.y, bulletAngle);
+    this.missileService.spawnBallisticObject(
+      helicopter.x,
+      helicopter.y,
+      missileAngle
+    );
   }
 
-  spawnAllBullets() {
+  spawnAllMissiles() {
+    //TODO: Make it appropiate for missiles (rather than bullets)
+
     const helicopters = this.helicopterService.helicopters;
 
     let chunkedTerrorists = this.terroristsByChunks();
@@ -53,12 +62,14 @@ export class HelicopterBulletService {
         const terroristCenterX = terrorist.x + terrorist.width / 2;
         const terroristCenterY = terrorist.y + terrorist.height / 2;
 
-        this.spawnBullet(helicopter, terroristCenterX, terroristCenterY);
+        this.spawnMissile(helicopter, terroristCenterX, terroristCenterY);
       }
     }
   }
 
   private terroristsByChunks() {
+    //TODO: Make it appropiate for missiles (rather than bullets)
+
     const targetByChunks: Terrorist[][] = [
       // 0 - 1/4
       [],

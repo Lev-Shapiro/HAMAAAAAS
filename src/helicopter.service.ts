@@ -29,6 +29,8 @@ export class HelicopterService {
   }
 
   drawHelicopter(helicopter: Helicopter) {
+    // TODO: Add how much is left ammunition
+    
     this.ctx.drawImage(
       helicopter.image,
       helicopter.x,
