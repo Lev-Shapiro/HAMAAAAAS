@@ -152,3 +152,10 @@ body {
 .upgrade-button:hover:not(:disabled) {
   background-color: #98d2d2;
 }
+
+/* Explosion */
+
+.explosion {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}

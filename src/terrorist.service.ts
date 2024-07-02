@@ -10,7 +10,7 @@ type TerroristInformation = {
   };
 };
 
-interface Terrorist {
+export interface Terrorist {
   type: TerroristType;
 
   x: number;
@@ -33,10 +33,18 @@ export class TerroristService {
 
   drawTerrorist(terrorist: Terrorist) {
     const image = new Image();
-    image.src =
-      terrorist.type === TerroristType.CAR_TERRORIST
-        ? "/terrorist_wcar.png"
-        : "/terrorist.gif";
+
+    switch (terrorist.type) {
+      case TerroristType.SOLIDER:
+        image.src = "/terrorist.gif";
+        break;
+      case TerroristType.CAR_TERRORIST:
+        image.src = "/terrorist_wcar.png";
+        break;
+      case TerroristType.PUTIN:
+        image.src = "/putin.webp";
+        break;
+    }
 
     // Draw health bar
     this.ctx.fillStyle = "red";
@@ -95,6 +103,17 @@ export class TerroristService {
       const terorrist: Terrorist = {
         type: TerroristType.CAR_TERRORIST,
         ...this.getTerroristOptions(TerroristType.CAR_TERRORIST),
+      };
+
+      this.terrorists.push(terorrist);
+    }
+  }
+
+  spawnPutin(count: number) {
+    for (let i = 0; i < count; i++) {
+      const terorrist: Terrorist = {
+        type: TerroristType.PUTIN,
+        ...this.getTerroristOptions(TerroristType.PUTIN),
       };
 
       this.terrorists.push(terorrist);

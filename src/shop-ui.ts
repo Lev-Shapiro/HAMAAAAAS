@@ -59,7 +59,10 @@ export class ShopUI {
     for (let i = 0; i < params.maxLevel; i++) {
       const star = document.createElement("span");
       star.className = "star";
-      star.innerHTML = i < params.level ? "&#9733;" : "&#9734;";
+      star.innerHTML =
+        i < params.level
+          ? "&#9733;"
+          : "&#9734;";
       rating.appendChild(star);
     }
     cardContent.appendChild(rating);
@@ -81,7 +84,7 @@ export class ShopUI {
       button.className = "upgrade-button";
       button.textContent = "Upgrade";
 
-      if(this.coinBank.data.value >= cost) {
+      if (this.coinBank.data.value >= cost) {
         button.onclick = () => {
           this.coinBank.data.value -= cost;
           params.upgrade();
