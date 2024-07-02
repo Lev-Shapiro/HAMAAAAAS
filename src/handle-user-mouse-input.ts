@@ -1,10 +1,10 @@
-import { BulletService } from "./bullet.service";
+import { UserBulletService } from "./bullet/user-bullet.service";
 import { RecoilService } from "./recoil";
 
 export async function handleUserMouseInput(
   canvas: HTMLCanvasElement,
   recoilService: RecoilService,
-  bulletService: BulletService,
+  bulletService: UserBulletService,
   
   handleToggleShop: () => void,
   handleOpenMenu: () => void

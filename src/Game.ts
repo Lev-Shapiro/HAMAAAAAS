@@ -29,10 +29,11 @@ export class Game extends GameServices {
 
     this.startGameLoop();
     this.terroristWaves.handleWaves();
+    this.helicopterBulletService.reload();
     handleUserMouseInput(
       this.canvas,
       this.recoilService,
-      this.bulletService,
+      this.userBulletService,
       () => this.openShop(),
       () => this.openMenu()
     );
@@ -46,6 +47,7 @@ export class Game extends GameServices {
     // Motion of all objects
     this.terroristService.rerenderTerrorists();
     this.bulletService.rerenderBullets();
+    this.helicopterService.rerenderHelicopters();
     this.checkCollisions();
 
     // Infographics
@@ -54,8 +56,9 @@ export class Game extends GameServices {
     this.coinBank.drawData(2);
 
     // Draw everything
-    this.terroristService.drawAllTerrorists();
+    this.helicopterService.drawAllHelicopters();
     this.bulletService.drawAllBullets();
+    this.terroristService.drawAllTerrorists();
     this.recoilService.drawCursor();
 
     requestAnimationFrame(() => this.startGameLoop());

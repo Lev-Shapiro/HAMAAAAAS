@@ -1,5 +1,4 @@
-import { DataModel } from "./data/data.model";
-import { GameUpgrades } from "./game-upgrades";
+import { GameUpgrades } from "../game-upgrades";
 
 interface BulletOptions {
   speed: number;
@@ -28,17 +27,8 @@ export class BulletService {
     private ctx: CanvasRenderingContext2D,
     private options: BulletOptions,
     private gameUpgrades: GameUpgrades,
-    private ammoLeftInfo: DataModel
   ) {
     this.bulletImage.src = "/bullet.webp";
-
-    this.ammoLeftInfo.data.value = gameUpgrades.capacityItem.value;
-  }
-
-  reload() {
-    setTimeout(() => {
-      this.ammoLeftInfo.data.value = this.gameUpgrades.capacityItem.value;
-    }, this.gameUpgrades.reloadSpeedItem.value);
   }
 
   drawBullet(bullet: Bullet) {
@@ -79,10 +69,6 @@ export class BulletService {
   }
 
   spawnBullet(x: number, y: number, angle: number): Bullet {
-    if(this.ammoLeftInfo.data.value <= 0) {
-      throw new Error('No more ammo left');
-    }
-
     const bullet = {
       x,
       y,
@@ -95,7 +81,6 @@ export class BulletService {
     };
 
     this.bullets.push(bullet);
-    this.ammoLeftInfo.data.value--;
     
     return bullet;
   }

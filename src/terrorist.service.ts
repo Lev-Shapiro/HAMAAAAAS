@@ -10,7 +10,7 @@ type TerroristInformation = {
   };
 };
 
-interface Terrorist {
+export interface Terrorist {
   type: TerroristType;
 
   x: number;

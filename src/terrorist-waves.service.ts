@@ -1,11 +1,13 @@
 import { TerroristService } from "./terrorist.service";
 
 export class TerroristWavesService {
-  currentWave = 1;
+  currentWave = 100;
 
   constructor(private terroristService: TerroristService) {}
 
   handleWaves() {
+    //TODO: Wave incrementation when everything is too easy
+    
     const totalTerrorists = this.terroristService.terrorists.length;
     if (totalTerrorists === 0) {
       this.presentWave();

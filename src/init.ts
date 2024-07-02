@@ -1,6 +1,9 @@
-import { BulletService } from "./bullet.service";
+import { BulletService } from "./bullet/bullet.service";
+import { HelicopterBulletService } from "./bullet/helicopter-bullet.service";
+import { UserBulletService } from "./bullet/user-bullet.service";
 import { DataModel } from "./data/data.model";
 import { GameUpgrades } from "./game-upgrades";
+import { HelicopterService } from "./helicopter.service";
 import { MenuService } from "./menu.service";
 import { RecoilService } from "./recoil";
 import { ShopUI } from "./shop-ui";
@@ -13,11 +16,14 @@ export class GameServices {
   healthInfo: DataModel;
   recoilService: RecoilService;
   bulletService: BulletService;
+  userBulletService: UserBulletService;
   terroristService: TerroristService;
   coinBank: DataModel;
   menuService: MenuService;
   terroristWaves: TerroristWavesService;
   upgrades: GameUpgrades;
+  helicopterService: HelicopterService;
+  helicopterBulletService: HelicopterBulletService;
   shopUI: ShopUI;
 
   constructor(
@@ -41,7 +47,7 @@ export class GameServices {
     });
 
     const coinBank = new DataModel(canvas, ctx, {
-      value: 98,
+      value: 99999,
       icon: "/coin.webp",
       iconWidth: 30,
       iconHeight: 30,
@@ -58,8 +64,9 @@ export class GameServices {
         height: 30,
       },
       upgrades,
-      ammoLeftInfo
     );
+
+    const userBulletService = new UserBulletService(bulletService, ammoLeftInfo, upgrades);
 
     const recoilService = new RecoilService(canvas, ctx);
 
@@ -83,6 +90,22 @@ export class GameServices {
       healthInfo
     );
 
+    const helicopterService = new HelicopterService(canvas, ctx, upgrades, {
+      width: 70,
+      height: 70,
+      image: "/helicopter.png",
+    });
+
+    const helicopterBulletService = new HelicopterBulletService(
+      upgrades,
+      terroristService,
+      helicopterService,
+      bulletService,
+      {
+        capaity: 100,
+      }
+    );
+
     const menuService = new MenuService(canvas, ctx);
     const terroristWavesService = new TerroristWavesService(terroristService);
 
@@ -92,11 +115,14 @@ export class GameServices {
     this.healthInfo = healthInfo;
     this.coinBank = coinBank;
     this.bulletService = bulletService;
+    this.userBulletService = userBulletService;
     this.recoilService = recoilService;
     this.terroristService = terroristService;
     this.menuService = menuService;
     this.terroristWaves = terroristWavesService;
     this.upgrades = upgrades;
+    this.helicopterService = helicopterService;
+    this.helicopterBulletService = helicopterBulletService;
     this.shopUI = shopUI;
   }
 }

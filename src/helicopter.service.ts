@@ -1,10 +1,12 @@
+import { GameUpgrades } from "./game-upgrades";
+
 interface HelicopterOptions {
     width: number;
     height: number;
     image: string;
 }
 
-interface HelicopterType {
+export interface Helicopter {
   x: number;
   y: number;
   width: number;
@@ -13,23 +15,24 @@ interface HelicopterType {
 }
 
 export class HelicopterService {
-  helicopters: HelicopterType[] = [];
+  helicopters: Helicopter[] = [];
 
   helicopterImage = new Image();
 
   constructor(
     private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
+    private gameUpgrades: GameUpgrades,
     private options: HelicopterOptions
   ) {
     this.helicopterImage.src = options.image;
   }
 
-  drawHelicopter(helicopter: HelicopterType) {
+  drawHelicopter(helicopter: Helicopter) {
     this.ctx.drawImage(
       helicopter.image,
-      -helicopter.width / 2,
-      -helicopter.height / 2,
+      helicopter.x,
+      helicopter.y,
       helicopter.width,
       helicopter.height
     );
@@ -37,18 +40,29 @@ export class HelicopterService {
 
   drawAllHelicopters() {
     const helicopters = this.helicopters;
+
     for (let i = helicopters.length - 1; i >= 0; i--) {
       this.drawHelicopter(helicopters[i]);
     }
   }
 
   spawnNewHelicopter() {
-    this.drawHelicopter({
-      x: this.canvas.width * (0.4 + Math.random() * 0.2),
+    const helicopterX = this.canvas.width * (0.3 + this.helicopters.length * 0.15);
+
+    this.helicopters.push({
+      x: helicopterX,
       y: this.canvas.height * (0.82 + Math.random() * 0.05),
       width: this.options.width,
       height: this.options.height,
       image: this.helicopterImage,
     });
+  }
+
+  rerenderHelicopters() {
+    const helicopters = this.gameUpgrades.helicopter.value - this.helicopters.length;
+
+    for(let i = 0; i < helicopters; i++) {
+      this.spawnNewHelicopter();
+    }
   }
 }
