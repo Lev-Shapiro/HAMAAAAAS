@@ -1,5 +1,6 @@
 import { handleUserMouseInput } from "./handle-user-mouse-input";
 import { GameServices } from "./init";
+import { BallisticObject } from "./missile/ballistic-object.service";
 import { Terrorist } from "./terrorist.service";
 
 export class Game extends GameServices {
@@ -30,7 +31,7 @@ export class Game extends GameServices {
 
     this.startGameLoop();
     this.terroristWaves.handleWaves();
-    // this.helicopterBulletService.reload();
+    this.helicopterBulletService.reload();
     this.helicopterMissileService.reload();
     handleUserMouseInput(
       this.canvas,
@@ -79,12 +80,7 @@ export class Game extends GameServices {
       for (let j = bullets.length - 1; j >= 0; j--) {
         const bullet = bullets[j];
 
-        if (
-          terrorist.x < bullet.x + bullet.width / 2 &&
-          terrorist.x + terrorist.width > bullet.x - bullet.width / 2 &&
-          terrorist.y < bullet.y + bullet.height &&
-          terrorist.y + terrorist.height > bullet.y
-        ) {
+        if (this.isCollisionWithTerrorist(terrorist, bullet)) {
           if (terrorist.health > bullet.damage) {
             terrorist.health -= bullet.damage;
           } else {
@@ -100,6 +96,8 @@ export class Game extends GameServices {
   }
 
   private checkMissileCollisions() {
+    const HIT_RADIUS = 150;
+
     const missiles = this.missileService.objects,
       terrorists = this.terroristService.terrorists;
 
@@ -109,15 +107,20 @@ export class Game extends GameServices {
      * * 2. If it is NOT less than half of the width of the terrorist, then skip
      * * Otherwise:
      * * 3.D. Remove the missile
-     * * 3.A. Find ALL terrorists within the radius of 150px from the missile
+     * * 3.A. Find ALL terrorists within the radius of 200px from the missile
      * * 3.B. Determine the damage of the missile on every terrorist that is within the radius (closer to the explosion = more damage)
      * * 3.C. Remove all the terrorists that no longer have health
      */
 
-    const possibleCollisions: {distance: number, terrorist: Terrorist}[] = [];
-    let terroristCollidedWith;
-
+    
     for (let i = missiles.length - 1; i >= 0; i--) {
+      const possibleCollisions: { distance: number; terrorist: Terrorist }[] = [];
+      
+      var terroristCollidedWith: {
+        distance: number;
+        terrorist: Terrorist;
+      } | null = null;
+
       const missile = missiles[i];
       const missileCenterX = missile.x + missile.width / 2;
       const missileCenterY = missile.y + missile.height / 2;
@@ -128,33 +131,47 @@ export class Game extends GameServices {
         const terroristCenterY = terrorist.y + terrorist.height / 2;
         const distanceX = Math.abs(terroristCenterX - missileCenterX);
         const distanceY = Math.abs(terroristCenterY - missileCenterY);
-        const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+        const distance = Math.sqrt(
+          distanceX * distanceX + distanceY * distanceY
+        );
 
-        if(distance < 100) {
+        if (distance < HIT_RADIUS) {
           possibleCollisions.push({
             terrorist,
-            distance
+            distance,
           });
         }
 
-        if(!terroristCollidedWith && distance < missile.width / 2) {
-          terroristCollidedWith = terrorist;
-          
-          // Remove the missile
-          missiles.splice(i, 1);
+        // Find the closest one terrorist
+        if (
+          this.isCollisionWithTerrorist(terrorist, missile) &&
+          (!terroristCollidedWith ||
+            (distance < terroristCollidedWith.distance && distance < 20))
+        ) {
+          terroristCollidedWith = {
+            distance,
+            terrorist,
+          };
         }
       }
 
-      if(terroristCollidedWith) {
-        for(let j = possibleCollisions.length - 1; j >= 0; j--) {
+      if (terroristCollidedWith) {
+        // Remove the missile
+        missiles.splice(i, 1);
+        this.explosionService.drawExplosion(missileCenterX, missileCenterY);
+
+        for (let j = 0; j < possibleCollisions.length; j++) {
           const collision = possibleCollisions[j];
-          
-          missiles.splice(i, 1);
 
           // Closer to explosion = more damage
           const damage = Math.ceil(
-            (collision.distance / 100) * this.upgrades.helicopterMissileDamage.value
-          )
+            (1 - collision.distance / HIT_RADIUS) *
+              this.upgrades.helicopterMissileDamage.value
+          );
+
+          // console.log(collision.distance, damage);
+
+          // debugger;
 
           if (collision.terrorist.health > damage) {
             collision.terrorist.health -= damage;
@@ -165,6 +182,18 @@ export class Game extends GameServices {
         }
       }
     }
+  }
+
+  private isCollisionWithTerrorist(
+    terrorist: Terrorist,
+    object: BallisticObject
+  ) {
+    return (
+      terrorist.x < object.x + object.width / 2 &&
+      terrorist.x + terrorist.width > object.x - object.width / 2 &&
+      terrorist.y < object.y + object.height &&
+      terrorist.y + terrorist.height > object.y
+    );
   }
 
   private async openShop() {

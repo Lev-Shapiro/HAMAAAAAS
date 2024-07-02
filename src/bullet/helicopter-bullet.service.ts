@@ -32,7 +32,7 @@ export class HelicopterBulletService {
     this.bulletService.spawnBallisticObject(helicopter.x, helicopter.y, bulletAngle);
   }
 
-  spawnAllBullets() {
+  async spawnAllBullets() {
     const helicopters = this.helicopterService.helicopters;
 
     let chunkedTerrorists = this.terroristsByChunks();
@@ -53,6 +53,7 @@ export class HelicopterBulletService {
         const terroristCenterX = terrorist.x + terrorist.width / 2;
         const terroristCenterY = terrorist.y + terrorist.height / 2;
 
+        await new Promise((resolve) => setTimeout(resolve, 50));
         this.spawnBullet(helicopter, terroristCenterX, terroristCenterY);
       }
     }
@@ -79,11 +80,13 @@ export class HelicopterBulletService {
         terrorist.health / this.gameUpgrades.damageItem.value
       );
 
+      const repeatUntilLimit = repeatUntilDead > 10 ? 10 : repeatUntilDead;
+
       const terroristChunkAssign = Math.floor(
         terrorist.x / (this.canvas.width / 4)
       );
 
-      for (let j = 0; j < repeatUntilDead; j++) {
+      for (let j = 0; j < repeatUntilLimit; j++) {
         targetByChunks[terroristChunkAssign].push(terrorist);
       }
     }

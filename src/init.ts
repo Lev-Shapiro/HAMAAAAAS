@@ -2,6 +2,7 @@ import { HelicopterBulletService } from "./bullet/helicopter-bullet.service";
 import { UserBulletService } from "./bullet/user-bullet.service";
 import { DataModel } from "./data/data.model";
 import { DynamicState, DynamicType } from "./dynamic-state";
+import { ExplosionService } from "./explosion.service";
 import { GameUpgrades } from "./game-upgrades";
 import { HelicopterService } from "./helicopter.service";
 import { MenuService } from "./menu.service";
@@ -29,19 +30,21 @@ export class GameServices {
   helicopterService: HelicopterService;
   helicopterBulletService: HelicopterBulletService;
   helicopterMissileService: HelicopterMissileService;
+  explosionService: ExplosionService;
   shopUI: ShopUI;
 
   constructor(
     public canvas: HTMLCanvasElement,
     public ctx: CanvasRenderingContext2D,
+    public explosionContainer: HTMLElement,
     public shopModal: HTMLElement,
     public shopItems: HTMLElement
   ) {
     const ammoLeftInfo = new DataModel(canvas, ctx, {
       value: 0,
       icon: "/bullet.webp",
-      iconWidth: 12,
-      iconHeight: 30,
+      iconWidth: 30,
+      iconHeight: 10,
     });
 
     const healthInfo = new DataModel(canvas, ctx, {
@@ -66,11 +69,11 @@ export class GameServices {
       canvas,
       ctx,
       {
-        width: 10,
-        height: 30,
+        width: 30,
+        height: 10,
         image: "/bullet.webp",
         speed: 10,
-        damageKeyReference: DynamicType.MissileDamage,
+        damageKeyReference: DynamicType.BulletDamage,
       },
       dynamicState
     );
@@ -82,7 +85,7 @@ export class GameServices {
         width: 251 / 4,
         height: 52 / 4,
         image: "/missile.webp",
-        speed: 12,
+        speed: 20,
         damageKeyReference: DynamicType.MissileDamage,
       },
       dynamicState
@@ -111,6 +114,12 @@ export class GameServices {
           health: 500,
           width: 70,
           height: 70,
+        },
+        [TerroristType.PUTIN]: {
+          speed: 10,
+          health: 99999,
+          width: 412 / 3,
+          height: 606 / 3,
         },
       },
       healthInfo
@@ -148,6 +157,10 @@ export class GameServices {
     const terroristWavesService = new TerroristWavesService(terroristService);
 
     const shopUI = new ShopUI(coinBank, shopModal, shopItems);
+    const explosion = new ExplosionService(explosionContainer, {
+      width: 150,
+      height: 150,
+    });
 
     this.ammoLeftInfo = ammoLeftInfo;
     this.healthInfo = healthInfo;
@@ -165,5 +178,6 @@ export class GameServices {
     this.helicopterMissileService = helicopterMissileService;
     this.shopUI = shopUI;
     this.dynamicState = dynamicState;
+    this.explosionService = explosion;
   }
 }

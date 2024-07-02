@@ -12,6 +12,9 @@ export class UpgradeItem {
     public description: string,
     public valuePerLevel: LevelPrice[]
   ) {
+    // TESTS
+    this.level = maxLevel;
+
     if (valuePerLevel.length === 0) {
       throw new Error("valuePerLevel must have at least one value");
     }
@@ -115,11 +118,11 @@ export class GameUpgrades {
       },
       {
         value: 240,
-        price: 75,
+        price: 250,
       },
       {
         value: 300,
-        price: 150,
+        price: 500,
       },
     ]
   );
@@ -206,7 +209,7 @@ export class GameUpgrades {
     "Increase missile damage of a helicopter",
     [
       {
-        value: 850,
+        value: 10000,
         price: 0,
       },
     ]

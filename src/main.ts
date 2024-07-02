@@ -14,11 +14,12 @@ if (!ctx) {
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const explosionContainer = document.body;
 const shopModal = document.getElementById("modal-container")!;
 const shopItemsContainer = document.getElementById("shop-items")!;
 const modalClose = document.getElementById("modal-close")!;
 
-const game = new Game(canvas, ctx, shopModal, shopItemsContainer);
+const game = new Game(canvas, ctx, explosionContainer, shopModal, shopItemsContainer);
 
 game.start()
 
