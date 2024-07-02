@@ -1,6 +1,6 @@
-import { DataModel } from "../data/data.model";
-import { GameUpgrades } from "../game-upgrades";
-import { BallisticObjectService } from "../missile/ballistic-object.service";
+import { BallisticObjectService } from "./ballistic/ballistic-object.service";
+import { DataModel } from "./data/data.model";
+import { GameUpgrades } from "./game-upgrades";
 
 export class UserBulletService {
   constructor(

@@ -1,6 +1,6 @@
+import { BallisticObject } from "./ballistic/ballistic-object.service";
 import { handleUserMouseInput } from "./handle-user-mouse-input";
 import { GameServices } from "./init";
-import { BallisticObject } from "./missile/ballistic-object.service";
 import { Terrorist } from "./terrorist.service";
 
 export class Game extends GameServices {
@@ -31,8 +31,12 @@ export class Game extends GameServices {
 
     this.startGameLoop();
     this.terroristWaves.handleWaves();
-    this.helicopterBulletService.reload();
-    this.helicopterMissileService.reload();
+
+    setInterval(() => {
+      this.helicopterBulletService.spawnAllBullets();
+      this.helicopterMissileService.spawnAllMissiles();
+    }, 1000);
+
     handleUserMouseInput(
       this.canvas,
       this.recoilService,
@@ -52,6 +56,7 @@ export class Game extends GameServices {
     this.bulletService.rerenderBallisticObjects();
     this.missileService.rerenderBallisticObjects();
     this.helicopterService.rerenderHelicopters();
+    this.helicopterService.rerenderAmmunition();
     this.checkBulletCollisions();
     this.checkMissileCollisions();
 
@@ -112,10 +117,10 @@ export class Game extends GameServices {
      * * 3.C. Remove all the terrorists that no longer have health
      */
 
-    
     for (let i = missiles.length - 1; i >= 0; i--) {
-      const possibleCollisions: { distance: number; terrorist: Terrorist }[] = [];
-      
+      const possibleCollisions: { distance: number; terrorist: Terrorist }[] =
+        [];
+
       var terroristCollidedWith: {
         distance: number;
         terrorist: Terrorist;
@@ -188,11 +193,15 @@ export class Game extends GameServices {
     terrorist: Terrorist,
     object: BallisticObject
   ) {
+    const terroristCenterX = terrorist.x + terrorist.width / 2;
+    const terroristCenterY = terrorist.y + terrorist.height / 2;
+
+    const objectCenterX = object.x + object.width / 2;
+    const objectCenterY = object.y + object.height / 2;
+
     return (
-      terrorist.x < object.x + object.width / 2 &&
-      terrorist.x + terrorist.width > object.x - object.width / 2 &&
-      terrorist.y < object.y + object.height &&
-      terrorist.y + terrorist.height > object.y
+      Math.abs(terroristCenterX - objectCenterX) < 30 &&
+      Math.abs(terroristCenterY - objectCenterY) < 30
     );
   }
 

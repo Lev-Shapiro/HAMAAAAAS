@@ -1,5 +1,5 @@
-import { UserBulletService } from "./bullet/user-bullet.service";
 import { RecoilService } from "./recoil";
+import { UserBulletService } from "./user-bullet.service";
 
 export async function handleUserMouseInput(
   canvas: HTMLCanvasElement,

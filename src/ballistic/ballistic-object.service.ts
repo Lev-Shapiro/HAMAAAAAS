@@ -1,11 +1,12 @@
-import { DynamicState, DynamicType } from "../dynamic-state";
+import { UpgradeItem } from "../game-upgrades";
+import { createImage } from "../tools/createImage";
 
 interface BallisticObjectOptions {
   speed: number;
   width: number;
   height: number;
   image: string;
-  damageKeyReference: DynamicType
+  damage: UpgradeItem
 }
 
 export interface BallisticObject {
@@ -20,17 +21,16 @@ export interface BallisticObject {
 }
 
 export class BallisticObjectService {
-  private readonly objectImage = new Image();
+  private readonly objectImage: HTMLImageElement;
 
   objects: BallisticObject[] = [];
 
   constructor(
     private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
-    private options: BallisticObjectOptions,
-    private state: DynamicState 
+    private options: BallisticObjectOptions
   ) {
-    this.objectImage.src = options.image;
+    this.objectImage = createImage(this.options.image);
   }
 
   drawBallisticObject(object: BallisticObject) {
@@ -71,19 +71,19 @@ export class BallisticObjectService {
   }
 
   spawnBallisticObject(x: number, y: number, angle: number): BallisticObject {
-    const ballisticObject = {
+    const ballisticObject: BallisticObject = {
       x,
       y,
-      width: this.options.width,
-      height: this.options.height,
       speedX: Math.cos(angle) * this.options.speed,
       speedY: Math.sin(angle) * this.options.speed,
       angle: angle,
-      damage: this.state.accessors[this.options.damageKeyReference].value,
+      width: this.options.width,
+      height: this.options.height,
+      damage: this.options.damage.value,
     };
 
     this.objects.push(ballisticObject);
-    
+
     return ballisticObject;
   }
 }

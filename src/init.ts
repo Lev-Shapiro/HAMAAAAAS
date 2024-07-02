@@ -1,18 +1,17 @@
-import { HelicopterBulletService } from "./bullet/helicopter-bullet.service";
-import { UserBulletService } from "./bullet/user-bullet.service";
+import { BallisticObjectService } from "./ballistic/ballistic-object.service";
 import { DataModel } from "./data/data.model";
-import { DynamicState, DynamicType } from "./dynamic-state";
 import { ExplosionService } from "./explosion.service";
 import { GameUpgrades } from "./game-upgrades";
-import { HelicopterService } from "./helicopter.service";
+import { HelicopterBulletService } from "./helicopter/helicopter-bullet.service";
+import { HelicopterMissileService } from "./helicopter/helicopter-missile.service";
+import { HelicopterService } from "./helicopter/helicopter.service";
 import { MenuService } from "./menu.service";
-import { BallisticObjectService } from "./missile/ballistic-object.service";
-import { HelicopterMissileService } from "./missile/helicopter-missile.service";
 import { RecoilService } from "./recoil";
 import { ShopUI } from "./shop-ui";
 import { TerroristType } from "./terrorist-type.enum";
 import { TerroristWavesService } from "./terrorist-waves.service";
 import { TerroristService } from "./terrorist.service";
+import { UserBulletService } from "./user-bullet.service";
 
 export class GameServices {
   ammoLeftInfo: DataModel;
@@ -26,7 +25,6 @@ export class GameServices {
   menuService: MenuService;
   terroristWaves: TerroristWavesService;
   upgrades: GameUpgrades;
-  dynamicState: DynamicState;
   helicopterService: HelicopterService;
   helicopterBulletService: HelicopterBulletService;
   helicopterMissileService: HelicopterMissileService;
@@ -63,8 +61,6 @@ export class GameServices {
 
     const upgrades = new GameUpgrades();
 
-    const dynamicState = new DynamicState(upgrades);
-
     const bulletService = new BallisticObjectService(
       canvas,
       ctx,
@@ -73,9 +69,8 @@ export class GameServices {
         height: 10,
         image: "/bullet.webp",
         speed: 10,
-        damageKeyReference: DynamicType.BulletDamage,
+        damage: upgrades.damageItem
       },
-      dynamicState
     );
 
     const missileService = new BallisticObjectService(
@@ -86,9 +81,8 @@ export class GameServices {
         height: 52 / 4,
         image: "/missile.webp",
         speed: 20,
-        damageKeyReference: DynamicType.MissileDamage,
+        damage: upgrades.helicopterMissileDamage
       },
-      dynamicState
     );
 
     const userBulletService = new UserBulletService(
@@ -137,9 +131,6 @@ export class GameServices {
       terroristService,
       helicopterService,
       bulletService,
-      {
-        capacity: 24,
-      }
     );
 
     const helicopterMissileService = new HelicopterMissileService(
@@ -148,9 +139,6 @@ export class GameServices {
       terroristService,
       helicopterService,
       missileService,
-      {
-        capacity: 1,
-      }
     );
 
     const menuService = new MenuService(canvas, ctx);
@@ -177,7 +165,6 @@ export class GameServices {
     this.helicopterBulletService = helicopterBulletService;
     this.helicopterMissileService = helicopterMissileService;
     this.shopUI = shopUI;
-    this.dynamicState = dynamicState;
     this.explosionService = explosion;
   }
 }
