@@ -14,7 +14,7 @@ open localhost:5173
 # Ubiquitous Language
 UN - Unnecessary Need
 
-## Contributions
+## Features that should be implemented in the future (probably in 100 or so years)
 1. CO-OP
 2. Naked Sinwar running across buildings
 3. Military Shop (Soliders, Tanks, Warplanes, earnings per terrorist, etc.)
