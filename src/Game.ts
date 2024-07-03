@@ -1,8 +1,10 @@
 import { BallisticObject } from "./ballistic/ballistic-object.service";
 import { handleUserMouseInput } from "./handle-user-mouse-input";
 import { GameServices } from "./init";
+import { TerroristType } from "./terrorist-type.enum";
 import { Terrorist } from "./terrorist.service";
 
+// TODO: Separate functionality in this class
 export class Game extends GameServices {
   isGameActive = false;
 
@@ -31,12 +33,14 @@ export class Game extends GameServices {
 
     this.startGameLoop();
     
+    this.helicopterService.reloadAmmo();
+
     setInterval(() => {
       this.terroristWaves.handleWaves();
       
       this.helicopterBulletService.spawnAllBullets();
       this.helicopterMissileService.spawnAllMissiles();
-    }, 1000);
+    }, 100);
 
     handleUserMouseInput(
       this.canvas,
@@ -57,7 +61,6 @@ export class Game extends GameServices {
     this.bulletService.rerenderBallisticObjects();
     this.missileService.rerenderBallisticObjects();
     this.helicopterService.rerenderHelicopters();
-    this.helicopterService.rerenderAmmunition();
     this.checkBulletCollisions();
     this.checkMissileCollisions();
 
@@ -67,6 +70,7 @@ export class Game extends GameServices {
     this.coinBank.drawData(2);
 
     // Draw everything
+    this.terroristWaves.drawWaveNumber();
     this.helicopterService.drawAllHelicopters();
     this.bulletService.drawAllBallisticObjects();
     this.missileService.drawAllBallisticObjects();
@@ -87,14 +91,16 @@ export class Game extends GameServices {
         const bullet = bullets[j];
 
         if (this.isCollisionWithTerrorist(terrorist, bullet)) {
+          bullets.splice(j, 1);
+
           if (terrorist.health > bullet.damage) {
             terrorist.health -= bullet.damage;
+            continue;
           } else {
             terrorists.splice(i, 1);
-            this.coinBank.data.value += 1;
+            this.getMoneyForKill(terrorist);
           }
 
-          bullets.splice(j, 1);
           break;
         }
       }
@@ -181,7 +187,7 @@ export class Game extends GameServices {
             collision.terrorist.health -= damage;
           } else {
             this.terroristService.terrorists.splice(collision.actualIndex, 1);
-            this.coinBank.data.value += 1;
+            this.getMoneyForKill(collision.terrorist);
           }
         }
       }
@@ -196,14 +202,30 @@ export class Game extends GameServices {
       object.x < terrorist.x + terrorist.width &&
       object.x + object.width > terrorist.x &&
       object.y < terrorist.y + terrorist.height &&
-      object.y + object.height > terrorist.y
-    );
+      object.height + object.y > terrorist.y
+    )
   }
 
   private async openShop() {
     document.exitPointerLock();
     this.isGameActive = false;
     this.shopUI.openModalIfClosed();
+  }
+
+  private getMoneyForKill(terrorist: Terrorist) {
+    switch (terrorist.type) {
+      case TerroristType.SOLIDER:
+        this.coinBank.data.value += 1;
+        break;
+
+      case TerroristType.CAR_TERRORIST:
+        this.coinBank.data.value += 5;
+        break;
+
+      case TerroristType.SINWAR:
+        this.coinBank.data.value += 2222;
+        break;
+    }
   }
 
   async openMenu() {

@@ -10,7 +10,7 @@ export class HelicopterMissileService {
     private gameUpgrades: GameUpgrades,
     private terroristService: TerroristService,
     private helicopterService: HelicopterService,
-    private missileService: BallisticObjectService,
+    private missileService: BallisticObjectService
   ) {}
 
   spawnMissile(helicopter: Helicopter, targetX: number, targetY: number) {
@@ -29,23 +29,23 @@ export class HelicopterMissileService {
   async launchFromHelicopter(helicopter: Helicopter, targets: Terrorist[]) {
     var j = 0;
 
-      for(; j < helicopter.missileCapacity; j++) {
-        const terrorist = targets[j];
+    for (; j < helicopter.missileCapacity; j++) {
+      const terrorist = targets[j];
 
-        if(!terrorist) break;
+      if (!terrorist) break;
 
-        const targetX = terrorist.x + terrorist.width / 2;
-        const targetY = terrorist.y + terrorist.height / 2;
+      const targetX = terrorist.x + terrorist.width / 2;
+      const targetY = terrorist.y + terrorist.height / 2;
 
-        if(Math.abs(targetX - helicopter.x) > this.canvas.width * 0.4) break;
+      if (Math.abs(targetX - helicopter.x) > this.canvas.width * 0.4) break;
 
-        this.spawnMissile(helicopter, targetX, targetY);
-      }
+      this.spawnMissile(helicopter, targetX, targetY);
+    }
 
-      helicopter.missileCapacity -= j;
+    helicopter.missileCapacity -= j;
   }
 
-  async spawnAllMissiles() {
+  spawnAllMissiles() {
     /**
      * * Algorithm
      * * 1. Create array of targets, sorted by distance from the bottom of the screen
@@ -53,20 +53,29 @@ export class HelicopterMissileService {
      * * 2.LOOP: Repeat step 2 until helicopter has no more missiles
      */
 
-    const availableHelicopters = this.helicopterService.helicopters.filter(h => h.missileCapacity > 0);
-    if(availableHelicopters.length === 0) return;
+    const availableHelicopters = this.helicopterService.helicopters.filter(
+      (helicopter) => helicopter.missileCapacity > 0
+    );
+    if (availableHelicopters.length === 0) return;
 
-    const terrorists = this.terroristService.terrorists.sort(
-      (a, b) => b.x - a.x
-    ).reduce<Terrorist[]>((acc, t) => {
-      const repeats = Math.ceil(t.health / this.gameUpgrades.damageItem.value);
-      return acc.concat(Array(repeats).fill(t));
-    }, []);
+    const terrorists = this.terroristService.terrorists
+      .sort((a, b) => b.x - a.x)
+      .reduce<Terrorist[]>((acc, t) => {
+        const repeats = Math.ceil(
+          t.health / this.gameUpgrades.damageItem.value
+        );
+        return acc.concat(Array(repeats).fill(t));
+      }, []);
 
-    for(let i = 0; i < availableHelicopters.length; i++) {
+    for (let i = 0; i < availableHelicopters.length; i++) {
       const helicopter = availableHelicopters[i];
 
-      const { startIndex, lastIndex } = this.findLegitRange(helicopter, terrorists);
+      if (helicopter.missileCapacity <= 0) continue;
+    
+      const { startIndex, lastIndex } = this.findLegitRange(
+        helicopter,
+        terrorists
+      );
 
       const targets = terrorists.slice(startIndex, lastIndex);
 
@@ -75,22 +84,23 @@ export class HelicopterMissileService {
   }
 
   private findLegitRange(helicoper: Helicopter, terrorists: Terrorist[]) {
-    let startIndex = 0, lastIndex = 0;
+    let startIndex = 0,
+      lastIndex = 0;
 
-    for(let i = 0; i < terrorists.length; i++) {
+    for (let i = 0; i < terrorists.length; i++) {
       const targetX = terrorists[i].x + terrorists[i].width / 2;
 
-      if(targetX - helicoper.x > -this.canvas.width * 0.2) {
+      if (targetX - helicoper.x > -this.canvas.width * 0.2) {
         startIndex = i;
       }
 
-      if(targetX - helicoper.x > this.canvas.width * 0.2) {
+      if (targetX - helicoper.x > this.canvas.width * 0.2) {
         lastIndex = i;
         break;
       }
     }
 
-    if(lastIndex === 0) {
+    if (lastIndex === 0) {
       lastIndex = terrorists.length;
     }
 

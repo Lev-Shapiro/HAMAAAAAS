@@ -14,13 +14,13 @@ export class Helicopter {
   ) {}
 
   reloadBullets() {
-    setTimeout(() => {
-      this.bulletCapacity = 8;
+    setInterval(() => {
+      this.bulletCapacity = 10;
     }, this.upgrades.helicopterBulletReloadSpeed.value);
   }
 
   reloadMissiles() {
-    setTimeout(() => {
+    setInterval(() => {
       this.missileCapacity = 1;
     }, this.upgrades.helicopterMissileReloadSpeed.value);
   }

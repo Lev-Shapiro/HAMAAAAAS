@@ -41,8 +41,8 @@ export class TerroristService {
       case TerroristType.CAR_TERRORIST:
         image.src = "/terrorist_wcar.png";
         break;
-      case TerroristType.PUTIN:
-        image.src = "/putin.webp";
+      case TerroristType.SINWAR:
+        image.src = "/sinwar.png";
         break;
     }
 
@@ -109,11 +109,11 @@ export class TerroristService {
     }
   }
 
-  spawnPutin(count: number) {
+  spawnSinwar(count: number) {
     for (let i = 0; i < count; i++) {
       const terorrist: Terrorist = {
-        type: TerroristType.PUTIN,
-        ...this.getTerroristOptions(TerroristType.PUTIN),
+        type: TerroristType.SINWAR,
+        ...this.getTerroristOptions(TerroristType.SINWAR),
       };
 
       this.terrorists.push(terorrist);

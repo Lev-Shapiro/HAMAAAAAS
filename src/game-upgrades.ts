@@ -12,7 +12,6 @@ export class UpgradeItem {
     public description: string,
     public valuePerLevel: LevelPrice[]
   ) {
-    // TESTS
     this.level = maxLevel;
 
     if (valuePerLevel.length === 0) {

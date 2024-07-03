@@ -53,7 +53,7 @@ export class GameServices {
     });
 
     const coinBank = new DataModel(canvas, ctx, {
-      value: 99999,
+      value: 0,
       icon: "/coin.webp",
       iconWidth: 30,
       iconHeight: 30,
@@ -98,18 +98,18 @@ export class GameServices {
       ctx,
       {
         [TerroristType.SOLIDER]: {
-          speed: 50,
+          speed: 30,
           health: 100,
           width: 35,
           height: 70,
         },
         [TerroristType.CAR_TERRORIST]: {
-          speed: 75,
+          speed: 60,
           health: 500,
           width: 70,
           height: 70,
         },
-        [TerroristType.PUTIN]: {
+        [TerroristType.SINWAR]: {
           speed: 10,
           health: 99999,
           width: 412 / 3,
@@ -142,7 +142,7 @@ export class GameServices {
     );
 
     const menuService = new MenuService(canvas, ctx);
-    const terroristWavesService = new TerroristWavesService(terroristService);
+    const terroristWavesService = new TerroristWavesService(canvas, ctx, terroristService, coinBank);
 
     const shopUI = new ShopUI(coinBank, shopModal, shopItems);
     const explosion = new ExplosionService(explosionContainer, {

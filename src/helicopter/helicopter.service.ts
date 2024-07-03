@@ -21,7 +21,7 @@ export class HelicopterService {
     this.helicopterImage.src = options.image;
   }
 
-  rerenderAmmunition() {
+  reloadAmmo() {
     for (let i = 0; i < this.helicopters.length; i++) {
       const helicopter = this.helicopters[i];
 
@@ -36,8 +36,6 @@ export class HelicopterService {
   }
 
   drawHelicopter(helicopter: Helicopter) {
-    // TODO: Add how much is left ammunition
-
     this.ctx.drawImage(
       helicopter.image,
       helicopter.x,
@@ -80,5 +78,13 @@ export class HelicopterService {
     for (let i = 0; i < helicopters; i++) {
       this.spawnNewHelicopter();
     }
+  }
+
+  resetBulletCapacity(hIndex: number, newValue: number) {
+    this.helicopters[hIndex].bulletCapacity = newValue;
+  }
+
+  resetMissileCapacity(hIndex: number, newValue: number) {
+    this.helicopters[hIndex].missileCapacity = newValue;
   }
 }

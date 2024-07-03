@@ -1,5 +1,6 @@
 import { BallisticObjectService } from "../ballistic/ballistic-object.service";
 import { GameUpgrades } from "../game-upgrades";
+import { TerroristType } from "../terrorist-type.enum";
 import { Terrorist, TerroristService } from "../terrorist.service";
 import { Helicopter } from "./helicopter";
 import { HelicopterService } from "./helicopter.service";
@@ -26,7 +27,7 @@ export class HelicopterBulletService {
     );
   }
 
-  launchFromHelicopter(helicopter: Helicopter, targets: Terrorist[]) {
+  async launchFromHelicopter(helicopter: Helicopter, targets: Terrorist[]) {
     var j = 0;
 
     for (; j < helicopter.bulletCapacity; j++) {
@@ -35,9 +36,15 @@ export class HelicopterBulletService {
       if (!terrorist) break;
 
       const targetX = terrorist.x + terrorist.width / 2;
-      const targetY = terrorist.y + terrorist.height / 2;
+      var targetY = terrorist.y + terrorist.height / 2;
+
+      if(terrorist.type === TerroristType.SINWAR) {
+        targetY = terrorist.y + terrorist.height / 1.5;
+      }
 
       if (Math.abs(targetX - helicopter.x) > this.canvas.width * 0.4) break;
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       this.spawnBullet(helicopter, targetX, targetY);
     }
