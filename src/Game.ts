@@ -9,22 +9,7 @@ export class Game extends GameServices {
   isGameActive = false;
 
   start() {
-    this.syncShop();
     this.openMenu();
-  }
-
-  syncShop() {
-    const upgrades = this.upgrades;
-
-    this.shopUI.addItem(upgrades.damageItem);
-    this.shopUI.addItem(upgrades.capacityItem);
-    this.shopUI.addItem(upgrades.reloadSpeedItem);
-
-    this.shopUI.addItem(upgrades.helicopter);
-    this.shopUI.addItem(upgrades.helicopterBulletReloadSpeed);
-    this.shopUI.addItem(upgrades.helicopterMissileReloadSpeed);
-
-    this.shopUI.renderItems();
   }
 
   continueGame() {
@@ -32,12 +17,12 @@ export class Game extends GameServices {
     this.canvas.requestPointerLock();
 
     this.startGameLoop();
-    
+
     this.helicopterService.reloadAmmo();
 
     setInterval(() => {
-      this.terroristWaves.handleWaves();
-      
+      this.terroristWaves.spawnTerroristWave();
+
       this.helicopterBulletService.spawnAllBullets();
       this.helicopterMissileService.spawnAllMissiles();
     }, 100);
@@ -125,8 +110,11 @@ export class Game extends GameServices {
      */
 
     for (let i = missiles.length - 1; i >= 0; i--) {
-      const possibleCollisions: { distance: number; actualIndex: number; terrorist: Terrorist }[] =
-        [];
+      const possibleCollisions: {
+        distance: number;
+        actualIndex: number;
+        terrorist: Terrorist;
+      }[] = [];
 
       var terroristCollidedWith: {
         distance: number;
@@ -176,12 +164,12 @@ export class Game extends GameServices {
         const terroristCenterY = t.y + t.height / 2;
 
         this.explosionService.drawExplosion(terroristCenterX, terroristCenterY);
-      
+
         for (let j = 0; j < possibleCollisions.length; j++) {
           const collision = possibleCollisions[j];
 
           // Closer to explosion = more damage
-          const damage = this.upgrades.helicopterMissileDamage.value
+          const damage = this.upgrades.helicopterMissileDamage.value;
 
           if (collision.terrorist.health > damage) {
             collision.terrorist.health -= damage;
@@ -203,13 +191,33 @@ export class Game extends GameServices {
       object.x + object.width > terrorist.x &&
       object.y < terrorist.y + terrorist.height &&
       object.height + object.y > terrorist.y
-    )
+    );
   }
 
   private async openShop() {
     document.exitPointerLock();
     this.isGameActive = false;
+    this.refreshShop();
     this.shopUI.openModalIfClosed();
+  }
+
+  private refreshShop() {
+    this.shopUI.reset();
+
+    const upgrades = this.upgrades;
+
+    this.shopUI.addItem(upgrades.damageItem);
+    this.shopUI.addItem(upgrades.capacityItem);
+    this.shopUI.addItem(upgrades.reloadSpeedItem);
+
+    this.shopUI.addItem(upgrades.helicopter);
+
+    if (upgrades.helicopter.value) {
+      this.shopUI.addItem(upgrades.helicopterBulletReloadSpeed);
+      this.shopUI.addItem(upgrades.helicopterMissileReloadSpeed);
+    }
+
+    this.shopUI.renderItems();
   }
 
   private getMoneyForKill(terrorist: Terrorist) {

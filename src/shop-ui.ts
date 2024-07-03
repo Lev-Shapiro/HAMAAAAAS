@@ -114,6 +114,10 @@ export class ShopUI {
     }
   }
 
+  reset(): void {
+    this.items = {};
+  }
+
   addItem(item: ShopItem): void {
     this.items[item.name] = item;
   }

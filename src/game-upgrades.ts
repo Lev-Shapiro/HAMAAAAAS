@@ -12,8 +12,6 @@ export class UpgradeItem {
     public description: string,
     public valuePerLevel: LevelPrice[]
   ) {
-    this.level = maxLevel;
-
     if (valuePerLevel.length === 0) {
       throw new Error("valuePerLevel must have at least one value");
     }
