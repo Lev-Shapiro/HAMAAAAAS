@@ -118,9 +118,8 @@ export class Game extends GameServices {
      * * 3.C. Remove all the terrorists that no longer have health
      */
 
-    // TODO: this.terroristService.terrorists.splice(j, 1) does remove not remove neccessarily terrorists at `possibleCollisions`
     for (let i = missiles.length - 1; i >= 0; i--) {
-      const possibleCollisions: { distance: number; terrorist: Terrorist }[] =
+      const possibleCollisions: { distance: number; actualIndex: number; terrorist: Terrorist }[] =
         [];
 
       var terroristCollidedWith: {
@@ -145,6 +144,7 @@ export class Game extends GameServices {
         if (distance < HIT_RADIUS) {
           possibleCollisions.push({
             terrorist,
+            actualIndex: j,
             distance,
           });
         }
@@ -180,7 +180,7 @@ export class Game extends GameServices {
           if (collision.terrorist.health > damage) {
             collision.terrorist.health -= damage;
           } else {
-            this.terroristService.terrorists.splice(j, 1);
+            this.terroristService.terrorists.splice(collision.actualIndex, 1);
             this.coinBank.data.value += 1;
           }
         }
@@ -192,17 +192,6 @@ export class Game extends GameServices {
     terrorist: Terrorist,
     object: BallisticObject
   ) {
-    // const terroristCenterX = terrorist.x + terrorist.width / 2;
-    // const terroristCenterY = terrorist.y + terrorist.height / 2;
-
-    // const objectCenterX = object.x + object.width / 2;
-    // const objectCenterY = object.y + object.height / 2;
-
-    // return (
-    //   Math.abs(terroristCenterX - objectCenterX) < 30 &&
-    //   Math.abs(terroristCenterY - objectCenterY) < 30
-    // );
-
     return (
       object.x < terrorist.x + terrorist.width &&
       object.x + object.width > terrorist.x &&

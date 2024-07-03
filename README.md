@@ -17,12 +17,10 @@ UN - Unnecessary Need
 ## Features that should be implemented in the future (probably in 100 or so years)
 1. CO-OP
 2. Naked Sinwar running across buildings
-3. Military Shop (Soliders, Tanks, Warplanes, earnings per terrorist, etc.)
-4. Different Incoming Terrorists: hamas solider, solider with a car, hamas leader, putin (maybe) or even hamas solider with a palestinian
-5. Terrorist health
-6. Different weaponry and ammunition
+3. Defense. Example: Tanks & Warplanes
+4. Targets. Example: Sinwar
+6. Ammunition. Example: Nuclear Weapon
 7. Health regenration
-8. Terrorist waves
 
 ## UN (Unneccessary Need) Contributions 
 7. *UN*: Israel flag waving animation

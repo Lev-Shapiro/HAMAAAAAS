@@ -75,8 +75,6 @@ export class HelicopterMissileService {
   }
 
   private findLegitRange(helicoper: Helicopter, terrorists: Terrorist[]) {
-    // TODO: First index when following condition is True: `targetX - helicopter.x > -this.canvas.width * 0.2`
-    // TODO: Last index when following condition is True: `targetX - helicopter.x > this.canvas.width * 0.2`
     let startIndex = 0, lastIndex = 0;
 
     for(let i = 0; i < terrorists.length; i++) {
