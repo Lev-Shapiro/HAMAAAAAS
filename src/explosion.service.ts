@@ -17,7 +17,7 @@ export class ExplosionService {
     const video = document.createElement("video");
     video.width = this.options.width;
     video.height = this.options.height;
-    video.src = "/explosion.webm";
+    video.src = "/explosion2.webm";
     video.muted = true;
     video.autoplay = true;
 

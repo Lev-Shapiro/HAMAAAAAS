@@ -30,9 +30,10 @@ export class Game extends GameServices {
     this.canvas.requestPointerLock();
 
     this.startGameLoop();
-    this.terroristWaves.handleWaves();
-
+    
     setInterval(() => {
+      this.terroristWaves.handleWaves();
+      
       this.helicopterBulletService.spawnAllBullets();
       this.helicopterMissileService.spawnAllMissiles();
     }, 1000);
@@ -117,6 +118,7 @@ export class Game extends GameServices {
      * * 3.C. Remove all the terrorists that no longer have health
      */
 
+    // TODO: this.terroristService.terrorists.splice(j, 1) does remove not remove neccessarily terrorists at `possibleCollisions`
     for (let i = missiles.length - 1; i >= 0; i--) {
       const possibleCollisions: { distance: number; terrorist: Terrorist }[] =
         [];
@@ -150,8 +152,7 @@ export class Game extends GameServices {
         // Find the closest one terrorist
         if (
           this.isCollisionWithTerrorist(terrorist, missile) &&
-          (!terroristCollidedWith ||
-            (distance < terroristCollidedWith.distance && distance < 20))
+          (!terroristCollidedWith || distance < terroristCollidedWith.distance)
         ) {
           terroristCollidedWith = {
             distance,
@@ -163,20 +164,18 @@ export class Game extends GameServices {
       if (terroristCollidedWith) {
         // Remove the missile
         missiles.splice(i, 1);
-        this.explosionService.drawExplosion(missileCenterX, missileCenterY);
 
+        const t = terroristCollidedWith.terrorist;
+        const terroristCenterX = t.x + t.width / 2;
+        const terroristCenterY = t.y + t.height / 2;
+
+        this.explosionService.drawExplosion(terroristCenterX, terroristCenterY);
+      
         for (let j = 0; j < possibleCollisions.length; j++) {
           const collision = possibleCollisions[j];
 
           // Closer to explosion = more damage
-          const damage = Math.ceil(
-            (1 - collision.distance / HIT_RADIUS) *
-              this.upgrades.helicopterMissileDamage.value
-          );
-
-          // console.log(collision.distance, damage);
-
-          // debugger;
+          const damage = this.upgrades.helicopterMissileDamage.value
 
           if (collision.terrorist.health > damage) {
             collision.terrorist.health -= damage;
@@ -193,15 +192,22 @@ export class Game extends GameServices {
     terrorist: Terrorist,
     object: BallisticObject
   ) {
-    const terroristCenterX = terrorist.x + terrorist.width / 2;
-    const terroristCenterY = terrorist.y + terrorist.height / 2;
+    // const terroristCenterX = terrorist.x + terrorist.width / 2;
+    // const terroristCenterY = terrorist.y + terrorist.height / 2;
 
-    const objectCenterX = object.x + object.width / 2;
-    const objectCenterY = object.y + object.height / 2;
+    // const objectCenterX = object.x + object.width / 2;
+    // const objectCenterY = object.y + object.height / 2;
+
+    // return (
+    //   Math.abs(terroristCenterX - objectCenterX) < 30 &&
+    //   Math.abs(terroristCenterY - objectCenterY) < 30
+    // );
 
     return (
-      Math.abs(terroristCenterX - objectCenterX) < 30 &&
-      Math.abs(terroristCenterY - objectCenterY) < 30
+      object.x < terrorist.x + terrorist.width &&
+      object.x + object.width > terrorist.x &&
+      object.y < terrorist.y + terrorist.height &&
+      object.y + object.height > terrorist.y
     );
   }
 

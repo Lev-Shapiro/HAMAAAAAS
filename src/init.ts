@@ -146,8 +146,8 @@ export class GameServices {
 
     const shopUI = new ShopUI(coinBank, shopModal, shopItems);
     const explosion = new ExplosionService(explosionContainer, {
-      width: 150,
-      height: 150,
+      width: 200,
+      height: 200,
     });
 
     this.ammoLeftInfo = ammoLeftInfo;
