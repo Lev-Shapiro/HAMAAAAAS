@@ -54,10 +54,22 @@ export class HelicopterService {
   }
 
   spawnNewHelicopter() {
-    const helicopterX =
-      this.canvas.width * (0.3 + this.helicopters.length * 0.15);
+    const updatedHelicopLen = this.helicopters.length + 1;
 
-    const helicopterY = this.canvas.height * (0.82 + Math.random() * 0.05);
+    const minX = this.canvas.width * 0.35;
+    const maxX = this.canvas.width * 0.8;
+
+    // Update axisX position for all helicopters in the last chunk equally spaced between minX and maxX, assuming that another helicopter will be added
+    const spaceForHelicopter = (maxX - minX) / (updatedHelicopLen + 1);
+
+    this.helicopters.forEach((helicopter, i) => {
+      const helicopterX = minX + spaceForHelicopter * i;
+      
+      helicopter.x = helicopterX;
+    });
+
+    const helicopterX = minX + spaceForHelicopter * updatedHelicopLen;
+    const helicopterY = this.canvas.height * (0.82 + Math.random() * 0.06);
 
     this.helicopters.push(
       new Helicopter(

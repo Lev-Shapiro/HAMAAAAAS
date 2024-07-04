@@ -54,7 +54,7 @@ export class GameServices {
     });
 
     const coinBank = new DataModel(canvas, ctx, {
-      value: 0,
+      value: 4000,
       icon: "/coin.webp",
       iconWidth: 30,
       iconHeight: 30,
@@ -62,29 +62,21 @@ export class GameServices {
 
     const upgrades = new GameUpgrades();
 
-    const bulletService = new BallisticObjectService(
-      canvas,
-      ctx,
-      {
-        width: 30,
-        height: 10,
-        image: "/bullet.webp",
-        speed: 10,
-        damage: upgrades.damageItem
-      },
-    );
+    const bulletService = new BallisticObjectService(canvas, ctx, {
+      width: 30,
+      height: 10,
+      image: "/bullet.webp",
+      speed: 10,
+      damage: upgrades.damageItem,
+    });
 
-    const missileService = new BallisticObjectService(
-      canvas,
-      ctx,
-      {
-        width: 251 / 4,
-        height: 52 / 4,
-        image: "/missile.webp",
-        speed: 20,
-        damage: upgrades.helicopterMissileDamage
-      },
-    );
+    const missileService = new BallisticObjectService(canvas, ctx, {
+      width: 251 / 4,
+      height: 52 / 4,
+      image: "/missile.webp",
+      speed: 20,
+      damage: upgrades.helicopterMissileDamage,
+    });
 
     const userBulletService = new UserBulletService(
       bulletService,
@@ -114,8 +106,8 @@ export class GameServices {
         [TerroristType.SINWAR]: {
           speed: 10,
           health: 99999,
-          width: 412 / 3,
-          height: 606 / 3,
+          width: 412 / 4,
+          height: 606 / 4,
         },
       },
       healthInfo
@@ -132,7 +124,7 @@ export class GameServices {
       upgrades,
       terroristService,
       helicopterService,
-      bulletService,
+      bulletService
     );
 
     const helicopterMissileService = new HelicopterMissileService(
@@ -140,17 +132,24 @@ export class GameServices {
       upgrades,
       terroristService,
       helicopterService,
-      missileService,
+      missileService
     );
 
-    const menuService = new MenuService(canvas, ctx);
-    const terroristWavesService = new TerroristWavesService(canvas, ctx, terroristService, coinBank);
-
-    const shopUI = new ShopUI(coinBank, shopModal, shopItems);
-    const explosion = new ExplosionService(explosionContainer, {
+    const explosionService = new ExplosionService(explosionContainer, {
       width: 200,
       height: 200,
     });
+
+    const menuService = new MenuService(canvas, ctx);
+    const terroristWavesService = new TerroristWavesService(
+      canvas,
+      ctx,
+      terroristService,
+      explosionService,
+      coinBank
+    );
+
+    const shopUI = new ShopUI(coinBank, shopModal, shopItems);
 
     this.ammoLeftInfo = ammoLeftInfo;
     this.healthInfo = healthInfo;
@@ -167,6 +166,6 @@ export class GameServices {
     this.helicopterBulletService = helicopterBulletService;
     this.helicopterMissileService = helicopterMissileService;
     this.shopUI = shopUI;
-    this.explosionService = explosion;
+    this.explosionService = explosionService;
   }
 }

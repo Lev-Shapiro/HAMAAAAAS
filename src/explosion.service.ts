@@ -3,12 +3,16 @@ interface ExplosionServiceOptions {
   height: number;
 }
 export class ExplosionService {
+  explosionAmount = 0;
+
   constructor(
     private explosionContainer: HTMLElement,
     private options: ExplosionServiceOptions
   ) {}
 
   drawExplosion(x: number, y: number) {
+    this.explosionAmount++;
+
     const explosion = document.createElement("div");
     explosion.classList.add("explosion");
     explosion.style.left = `${x}px`;
@@ -25,7 +29,12 @@ export class ExplosionService {
     this.explosionContainer.appendChild(explosion);
 
     setTimeout(() => {
+      this.explosionAmount--;
       explosion.remove();
-    }, 1500);
+    }, 1000);
+  }
+
+  get hasExplosion() {
+    return this.explosionAmount > 0;
   }
 }

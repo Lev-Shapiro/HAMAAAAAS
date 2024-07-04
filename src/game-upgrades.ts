@@ -2,20 +2,17 @@ interface LevelPrice {
   value: number;
   price: number;
 }
+
 export class UpgradeItem {
-  level = 1;
+  level = 0;
 
   constructor(
     public name: string,
     public maxLevel: number,
     public icon: string,
     public description: string,
-    public valuePerLevel: LevelPrice[]
+    public valuePriceFormula: (level: number) => LevelPrice
   ) {
-    if (valuePerLevel.length === 0) {
-      throw new Error("valuePerLevel must have at least one value");
-    }
-
     if (maxLevel < 1) {
       throw new Error("maxLevel must be greater than 0");
     }
@@ -25,18 +22,14 @@ export class UpgradeItem {
     if (this.level < this.maxLevel) {
       this.level++;
     }
-
-    if (this.level > this.valuePerLevel.length) {
-      throw new Error("level must be less than valuePerLevel.length");
-    }
   }
 
   get value() {
-    return this.valuePerLevel[this.level - 1].value;
+    return this.valuePriceFormula(this.level).value;
   }
 
   get upgradeCost() {
-    const nextItemPrice = this.valuePerLevel[this.level];
+    const nextItemPrice = this.valuePriceFormula(this.level + 1);
     if (nextItemPrice === undefined) return null;
 
     return nextItemPrice.price;
@@ -49,29 +42,18 @@ export class GameUpgrades {
     5,
     "/reload.webp",
     "Reload your gun faster",
-    // Price = prevPrice * 2 + 100
-    [
-      {
-        value: 2500,
-        price: 0,
-      },
-      {
-        value: 2000,
-        price: 300,
-      },
-      {
-        value: 1500,
-        price: 700,
-      },
-      {
-        value: 1000,
-        price: 1500,
-      },
-      {
-        value: 500,
-        price: 3100,
-      },
-    ]
+    (level) => {
+      const basePrice = 100;
+      const exponent = 1.5;
+
+      const baseReload = 2500; // in milliseconds
+      const coefficient = 0.4;
+
+      return {
+        value: Math.round(baseReload / (1 + coefficient * level)),
+        price: Math.round(basePrice * Math.pow(level, exponent)),
+      };
+    }
   );
 
   capacityItem = new UpgradeItem(
@@ -79,124 +61,80 @@ export class GameUpgrades {
     5,
     "/capacity.webp",
     "Increase bullet capacity",
-    [
-      {
-        value: 16,
-        price: 0,
-      },
-      {
-        value: 24,
-        price: 100,
-      },
-      {
-        value: 32,
-        price: 300,
-      },
-      {
-        value: 48,
-        price: 700,
-      },
-      {
-        value: 64,
-        price: 1200,
-      },
-    ]
+    (level) => {
+      const baseAmmo = 16,
+        basePrice = 10,
+        priceRate = 1.5,
+        ammoIncrement = 16;
+
+      const value = baseAmmo + ammoIncrement * level;
+      const price = basePrice * (1 + priceRate) ** level;
+
+      return { value, price };
+    }
   );
 
   damageItem = new UpgradeItem(
     "Damage",
-    3,
+    10,
     "/damage.webp",
     "Increase damage of your gun",
-    [
-      {
-        value: 120,
-        price: 0,
-      },
-      {
-        value: 240,
-        price: 250,
-      },
-      {
-        value: 300,
-        price: 500,
-      },
-    ]
+    (level) => {
+      const value = 120 + 60 * level;
+      const price = 250 * level;
+
+      return { value, price };
+    }
   );
 
   helicopter = new UpgradeItem(
     "Helicopter",
-    5,
+    6,
     "/helicopter.png",
     "Buy a helicopter",
-    [
-      {
-        value: 0,
-        price: 0,
-      },
-      {
-        value: 1,
-        price: 750,
-      },
-      {
-        value: 2,
-        price: 2000,
-      },
-      {
-        value: 3,
-        price: 7000,
-      },
-      {
-        value: 4,
-        price: 15000,
-      },
-    ]
+    (level) => {
+      return {
+        value: level,
+        price: 750 * Math.pow(level, 2)
+      }
+    },
   );
 
   helicopterBulletReloadSpeed = new UpgradeItem(
     "Helicopter Bullet Reload Speed",
-    4,
+    100,
     "/helicopter.png",
     "Increase bullet reload speed of a helicopter",
-    [
-      {
-        value: 7500,
-        price: 0,
-      },
-      {
-        value: 5000,
-        price: 1000,
-      },
-      {
-        value: 4000,
-        price: 2000,
-      },
-      {
-        value: 2500,
-        price: 5000,
-      },
-    ]
+    (level) => {
+      const basePrice = 1000;
+      const exponent = 1.2;
+
+      const baseReload = 7500; // in milliseconds
+      const coefficient = 0.4;
+
+      return {
+        value: Math.round(baseReload / (1 + coefficient * level)),
+        price: Math.round(basePrice * Math.pow(level, exponent)),
+      }
+    }
   );
 
   helicopterMissileReloadSpeed = new UpgradeItem(
     "Helicopter Missile Reload Speed",
-    3,
+    25,
     "/helicopter.png",
     "Increase missile reload speed of a helicopter",
-    [
-      {
-        value: 10000,
-        price: 1000,
-      },
-      {
-        value: 5000,
-        price: 2000,
-      },
-      {
-        value: 3000,
-        price: 5000,
-      },
-    ]
+    (level) => {
+      const basePrice = 2000;
+      const exponent = 1.4;
+
+      const baseReload = 10000; // in milliseconds
+
+      return {
+        value: baseReload / (level + 1),
+        price: Math.round(basePrice * Math.pow(level, exponent)),
+      }
+    }
   );
 
   helicopterMissileDamage = new UpgradeItem(
@@ -204,11 +142,9 @@ export class GameUpgrades {
     1,
     "/helicopter.png",
     "Increase missile damage of a helicopter",
-    [
-      {
-        value: 10000,
-        price: 0,
-      },
-    ]
+    () => ({
+      price: 0,
+      value: 10000
+    })
   );
 }

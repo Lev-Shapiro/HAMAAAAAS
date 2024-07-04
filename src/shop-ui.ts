@@ -53,23 +53,14 @@ export class ShopUI {
     title.textContent = params.name;
     cardContent.appendChild(title);
 
-    // Create and append the rating
-    const rating = document.createElement("div");
-    rating.className = "rating";
-    for (let i = 0; i < params.maxLevel; i++) {
-      const star = document.createElement("span");
-      star.className = "star";
-      star.innerHTML =
-        i < params.level
-          ? "&#9733;"
-          : "&#9734;";
-      rating.appendChild(star);
-    }
-    cardContent.appendChild(rating);
+    const level = document.createElement("h3");
+    level.className = "level-text";
+    level.innerHTML = `LVL ${params.level}`;
+    cardContent.appendChild(level);
 
     const cost = params.upgradeCost;
 
-    if (cost) {
+    if (cost && params.maxLevel > params.level) {
       // Create and append the price
       const price = document.createElement("p");
       price.className = "price";
@@ -95,6 +86,11 @@ export class ShopUI {
       }
 
       cardContent.appendChild(button);
+    } else {
+      const maxSign = document.createElement("p");
+      maxSign.className = "price";
+      maxSign.textContent = "(MAX)";
+      cardContent.appendChild(maxSign);
     }
 
     // Append card content to the card
@@ -107,7 +103,6 @@ export class ShopUI {
   renderItems(): void {
     const items = Object.values(this.items);
 
-    console.log(items);
     this.itemsContainer.innerHTML = "";
     for (const item of items) {
       this.renderItem(item);

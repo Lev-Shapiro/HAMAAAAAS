@@ -43,7 +43,7 @@ export class Game extends GameServices {
 
     // Motion of all objects
     this.terroristService.rerenderTerrorists();
-    this.bulletService.rerenderBallisticObjects();
+    if(this.terroristWaves.currentWave < 200) this.bulletService.rerenderBallisticObjects();
     this.missileService.rerenderBallisticObjects();
     this.helicopterService.rerenderHelicopters();
     this.checkBulletCollisions();
@@ -57,7 +57,7 @@ export class Game extends GameServices {
     // Draw everything
     this.terroristWaves.drawWaveNumber();
     this.helicopterService.drawAllHelicopters();
-    this.bulletService.drawAllBallisticObjects();
+    if(this.terroristWaves.currentWave < 200) this.bulletService.drawAllBallisticObjects();
     this.missileService.drawAllBallisticObjects();
     this.terroristService.drawAllTerrorists();
     this.recoilService.drawCursor();

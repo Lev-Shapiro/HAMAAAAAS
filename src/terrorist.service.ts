@@ -39,10 +39,10 @@ export class TerroristService {
         image.src = "/terrorist.gif";
         break;
       case TerroristType.CAR_TERRORIST:
-        image.src = "/terrorist_wcar.png";
+        image.src = "/terrorist_wcar.webp";
         break;
       case TerroristType.SINWAR:
-        image.src = "/sinwar.png";
+        image.src = "/sinwar.webp";
         break;
     }
 

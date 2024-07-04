@@ -1,13 +1,15 @@
 import { DataModel } from "./data/data.model";
+import { ExplosionService } from "./explosion.service";
 import { TerroristService } from "./terrorist.service";
 
 export class TerroristWavesService {
-  currentWave = 30;
+  currentWave = 1;
 
   constructor(
     private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
     private terroristService: TerroristService,
+    private explosionService: ExplosionService,
     private coinBank: DataModel
   ) {}
 
@@ -15,13 +17,16 @@ export class TerroristWavesService {
     //TODO: Wave incrementation when everything is too easy
 
     const totalTerrorists = this.terroristService.terrorists.length;
+    const hasExplosion = this.explosionService.hasExplosion;
 
-    if (totalTerrorists === 0) {
+    if (totalTerrorists === 0 && !hasExplosion) {
       this.currentWave++;
 
-      this.terroristService.spawnTerrorists(this.currentWave * 2);
+      if (this.currentWave < 500) {
+        this.terroristService.spawnTerrorists(this.currentWave * 2);
+      }
 
-      if (this.currentWave > 10) {
+      if (this.currentWave > 10 && this.currentWave < 1200) {
         this.terroristService.spawnCarTerrorists(
           Math.floor(this.currentWave / 10) + Math.round(Math.random() * 1)
         );
