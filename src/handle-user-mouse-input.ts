@@ -25,6 +25,8 @@ export function handleUserMouseInput(
   }
 
   const handleShootAttempt = () => {
+    const INTERVAL_INTENCITY = isMobile() ? 250 : 100;
+
     interval = setInterval(() => {
       const dx = recoilService.cursorX - canvas.width / 2;
       const dy = recoilService.cursorY - canvas.height;
@@ -33,7 +35,7 @@ export function handleUserMouseInput(
 
       bulletService.spawnBullet(canvas.width / 2, canvas.height, angle);
       recoilService.recoil();
-    }, 100);
+    }, INTERVAL_INTENCITY);
 
     if (isMobile()) {
       canvas.addEventListener("touchend", handleResetShootInterval, {
@@ -69,6 +71,7 @@ export function handleUserMouseInput(
   if (isMobile()) {
     canvas.addEventListener("touchstart", handleShootAttempt);
     canvas.addEventListener("touchmove", handleTouchMove);
+    canvas.addEventListener("touchend", handleResetShootInterval);
   } else {
     canvas.addEventListener("mousedown", handleShootAttempt);
     canvas.addEventListener("mousemove", handleMouseMove);
