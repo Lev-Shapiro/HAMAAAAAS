@@ -3,7 +3,7 @@ import { ExplosionService } from "./explosion.service";
 import { TerroristService } from "./terrorist.service";
 
 export class TerroristWavesService {
-  currentWave = 1;
+  currentWave = 0;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -24,6 +24,10 @@ export class TerroristWavesService {
 
       if (this.currentWave < 500) {
         this.terroristService.spawnTerrorists(this.currentWave * 2);
+
+        if (Math.random() > 0.6) {
+          this.terroristService.spawnBombers(Math.round(Math.random() * this.currentWave / 3));
+        }
       }
 
       if (this.currentWave > 10 && this.currentWave < 1200) {
@@ -39,7 +43,7 @@ export class TerroristWavesService {
       }
 
       if (this.currentWave % 10 === 0 && this.currentWave !== 0) {
-        this.coinBank.data.value += 50 * this.currentWave;
+        this.coinBank.data.value += 5 * this.currentWave;
       }
     }
   }

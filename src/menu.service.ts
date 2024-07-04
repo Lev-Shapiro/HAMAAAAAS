@@ -1,3 +1,6 @@
+import { DataModel } from "./data/data.model";
+import { ScoreCounter } from "./score-counter";
+
 export class MenuService {
   private BUTTON_WIDTH = 200;
   private BUTTON_HEIGHT = 50;
@@ -7,7 +10,10 @@ export class MenuService {
 
   constructor(
     private canvas: HTMLCanvasElement,
-    private ctx: CanvasRenderingContext2D
+    private ctx: CanvasRenderingContext2D,
+    // Used to identify the status of the game to generate appropriate menu
+    private scoreCounter: ScoreCounter,
+    private healthInfo: DataModel
   ) {
     this.canvasW = this.canvas.width;
     this.canvasH = this.canvas.height;
@@ -18,11 +24,40 @@ export class MenuService {
     await this.handleCanvasClick();
   }
 
+  drawColorfulText(
+    startX: number,
+    startY: number,
+    textArray: { text: string; color?: string }[]
+  ): void {
+    let currentX =
+      startX -
+      this.ctx.measureText(textArray.reduce((acc, { text }) => acc + text, ""))
+        .width /
+        2;
+
+    this.ctx.save();
+    this.ctx.textBaseline = "top";
+
+    textArray.forEach(({ text, color }) => {
+      if (color) {
+        this.ctx.fillStyle = color;
+      }
+
+      this.ctx.fillText(text, currentX, startY);
+
+      // Move the x-coordinate for the next piece of text
+      currentX += this.ctx.measureText(text).width;
+    });
+
+    this.ctx.restore();
+  }
+
   drawMenu() {
     const ctx = this.ctx;
+    ctx.textAlign = "left";
 
     const modalWidth = 400;
-    const modalHeight = 400;
+    const modalHeight = 500;
     const modalX = (this.canvasW - modalWidth) / 2;
     const modalY = (this.canvasH - modalHeight) / 2;
 
@@ -38,35 +73,65 @@ export class MenuService {
     // Draw modal text
     ctx.fillStyle = "#FFFFFF";
     ctx.font = "24px Arial";
+
+    if (this.healthInfo.data.value <= 0) {
+      if (this.scoreCounter.score >= 2) {
+        this.drawColorfulText(this.canvasW / 2, modalY + 50, [
+          {
+            text:
+              "Killed " + this.scoreCounter.score + " terrorists!",
+          },
+        ]);
+      } else {
+        this.drawColorfulText(this.canvasW / 2, modalY + 50, [
+          { text: "GAME ENDED" },
+        ]);
+      }
+
+      ctx.font = "bold 24px Arial";
+      
+      this.drawColorfulText(this.canvasW / 2, modalY + 150, [
+        { text: `SCORE: ${this.scoreCounter.score}`, color: "#4CAF50" },
+      ]);
+    } else {
+      this.drawColorfulText(this.canvasW / 2, modalY + 50, [
+        { text: "Freeing Palestine from HAMAS" },
+      ]);
+
+      ctx.font = "18px Arial";
+
+      this.drawColorfulText(this.canvasW / 2, modalY + 100, [
+        { text: "Press M", color: "#FF5722" },
+        { text: " - open menu", color: "#FFFFFF" },
+      ]);
+
+      this.drawColorfulText(this.canvasW / 2, modalY + 125, [
+        { text: "Press R", color: "#FF5722" },
+        { text: " - reload gun", color: "#FFFFFF" },
+      ]);
+
+      this.drawColorfulText(this.canvasW / 2, modalY + 150, [
+        { text: "Press S", color: "#FF5722" },
+        { text: " - open shop", color: "#FFFFFF" },
+      ]);
+    }
+
     ctx.textAlign = "center";
-    ctx.fillText(
-      'Click "Continue" to play the game',
-      this.canvasW / 2,
-      modalY + 50
-    );
+
+    if (this.healthInfo.data.value <= 0) {
+      this.drawButton(0, "Play Again", "#4CAF50");
+    } else if (this.scoreCounter.score === 0) {
+      this.drawButton(0, "Start game", "#4CAF50");
+    } else {
+      this.drawButton(0, "Continue", "#FF5722");
+    }
 
     ctx.font = "16px Arial";
-
     ctx.fillText(
-      "Press M to open the menu during the game",
+      "© 2024 Lev Shapiro - All rights reserved",
       this.canvasW / 2,
-      modalY + 100
-    )
-
-    ctx.fillText(
-      "Press R to reload your gun during the game",
-      this.canvasW / 2,
-      modalY + 150
-    )
-
-    ctx.fillText(
-      "Press S to open the shop during the game",
-      this.canvasW / 2,
-      modalY + 200
-    )
-
-
-    this.drawButton(1, "Continue")
+      modalY + modalHeight - 40
+    );
   }
 
   handleCanvasClick() {
@@ -79,7 +144,7 @@ export class MenuService {
           await new Promise((r) => setTimeout(r, 1500 - elapsedTime));
         }
 
-        const { buttonX, buttonY } = this.getButtonCoordsByIndex(1);
+        const { buttonX, buttonY } = this.getButtonCoordsByIndex(0);
 
         const clickX = event.clientX;
         const clickY = event.clientY;
@@ -102,20 +167,23 @@ export class MenuService {
 
   private getButtonCoordsByIndex(index: number) {
     const buttonX = (this.canvasW - this.BUTTON_WIDTH) / 2;
-    const buttonY = (this.canvasH - this.BUTTON_HEIGHT) / 2 + 30 * (index + 1) + this.BUTTON_HEIGHT * index;
+    const buttonY =
+      (this.canvasH - this.BUTTON_HEIGHT) / 2 +
+      32 * (index + 1) +
+      this.BUTTON_HEIGHT * index;
 
     return {
       buttonX,
-      buttonY
-    }
+      buttonY,
+    };
   }
 
-  private drawButton(index: number, text: string) {
+  private drawButton(index: number, text: string, color: string) {
     const ctx = this.ctx;
 
     const { buttonX, buttonY } = this.getButtonCoordsByIndex(index);
 
-    ctx.fillStyle = "#FF5722";
+    ctx.fillStyle = color;
     ctx.fillRect(buttonX, buttonY, this.BUTTON_WIDTH, this.BUTTON_HEIGHT);
 
     ctx.strokeStyle = "#FFFFFF";

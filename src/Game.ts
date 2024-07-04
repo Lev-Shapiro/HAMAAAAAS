@@ -9,7 +9,7 @@ export class Game extends GameServices {
   isGameActive = false;
 
   start() {
-    this.openMenu();
+    this.openGameMenu();
   }
 
   continueGame() {
@@ -20,30 +20,49 @@ export class Game extends GameServices {
 
     this.helicopterService.reloadAmmo();
 
-    setInterval(() => {
+    const spawnerInterval = setInterval(() => {
       this.terroristWaves.spawnTerroristWave();
 
       this.helicopterBulletService.spawnAllBullets();
       this.helicopterMissileService.spawnAllMissiles();
     }, 100);
 
+    const openShop = () => {
+      clearInterval(spawnerInterval);
+      this.helicopterService.developerResetReloadIntervals();
+
+      this.openShop();
+    };
+
+    const openGameMenu = () => {
+      clearInterval(spawnerInterval);
+      this.helicopterService.developerResetReloadIntervals();
+
+      this.openGameMenu();
+    };
+
     handleUserMouseInput(
       this.canvas,
       this.recoilService,
       this.userBulletService,
-      () => this.openShop(),
-      () => this.openMenu()
+      () => openShop(),
+      () => openGameMenu()
     );
   }
 
   private startGameLoop() {
     if (!this.isGameActive) return;
 
+    if (this.healthInfo.data.value <= 0) {
+      return this.openGameMenu();
+    }
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Motion of all objects
     this.terroristService.rerenderTerrorists();
-    if(this.terroristWaves.currentWave < 200) this.bulletService.rerenderBallisticObjects();
+    if (this.terroristWaves.currentWave < 200)
+      this.bulletService.rerenderBallisticObjects();
     this.missileService.rerenderBallisticObjects();
     this.helicopterService.rerenderHelicopters();
     this.checkBulletCollisions();
@@ -57,7 +76,8 @@ export class Game extends GameServices {
     // Draw everything
     this.terroristWaves.drawWaveNumber();
     this.helicopterService.drawAllHelicopters();
-    if(this.terroristWaves.currentWave < 200) this.bulletService.drawAllBallisticObjects();
+    if (this.terroristWaves.currentWave < 200)
+      this.bulletService.drawAllBallisticObjects();
     this.missileService.drawAllBallisticObjects();
     this.terroristService.drawAllTerrorists();
     this.recoilService.drawCursor();
@@ -83,6 +103,7 @@ export class Game extends GameServices {
             continue;
           } else {
             terrorists.splice(i, 1);
+            this.scoreCounter.incrementScore();
             this.getMoneyForKill(terrorist);
           }
 
@@ -175,6 +196,7 @@ export class Game extends GameServices {
             collision.terrorist.health -= damage;
           } else {
             this.terroristService.terrorists.splice(collision.actualIndex, 1);
+            this.scoreCounter.incrementScore();
             this.getMoneyForKill(collision.terrorist);
           }
         }
@@ -226,8 +248,12 @@ export class Game extends GameServices {
         this.coinBank.data.value += 1;
         break;
 
+      case TerroristType.BOMBER:
+        this.coinBank.data.value += 25;
+        break;
+
       case TerroristType.CAR_TERRORIST:
-        this.coinBank.data.value += 5;
+        this.coinBank.data.value += 10;
         break;
 
       case TerroristType.SINWAR:
@@ -236,13 +262,17 @@ export class Game extends GameServices {
     }
   }
 
-  async openMenu() {
+  async openGameMenu() {
     this.isGameActive = false;
     document.exitPointerLock();
 
     this.shopUI.closeModalIfOpened();
     await this.menuService.waitUntilUserPressesContinue();
 
-    this.continueGame();
+    if(this.healthInfo.data.value > 0) {
+      this.continueGame();
+    } else {
+      this.terminateToAshes();
+    }
   }
 }

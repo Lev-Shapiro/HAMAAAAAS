@@ -35,6 +35,13 @@ export class HelicopterService {
     }
   }
 
+  developerResetReloadIntervals() {
+    for (let i = 0; i < this.helicopters.length; i++) {
+      const helicopter = this.helicopters[i];
+      helicopter.developerResetReloadIntervals();
+    }
+  }
+
   drawHelicopter(helicopter: Helicopter) {
     this.ctx.drawImage(
       helicopter.image,

@@ -38,6 +38,9 @@ export class TerroristService {
       case TerroristType.SOLIDER:
         image.src = "/terrorist.gif";
         break;
+      case TerroristType.BOMBER:
+        image.src = "/suicide-bomber.webp";
+        break;
       case TerroristType.CAR_TERRORIST:
         image.src = "/terrorist_wcar.webp";
         break;
@@ -102,6 +105,17 @@ export class TerroristService {
     }
   }
 
+  spawnBombers(count: number) {
+    for (let i = 0; i < count; i++) {
+      const terorrist: Terrorist = {
+        type: TerroristType.BOMBER,
+        ...this.getTerroristOptions(TerroristType.BOMBER),
+      };
+
+      this.terrorists.push(terorrist);
+    }
+  }
+
   spawnCarTerrorists(count: number) {
     for (let i = 0; i < count; i++) {
       const terorrist: Terrorist = {
@@ -136,6 +150,9 @@ export class TerroristService {
     switch (terrorist.type) {
       case TerroristType.SOLIDER:
         this.healthInfo.data.value -= 1;
+        break;
+      case TerroristType.BOMBER:
+        this.healthInfo.data.value -= 20;
         break;
       case TerroristType.CAR_TERRORIST:
         this.healthInfo.data.value -= 5;

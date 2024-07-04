@@ -20,7 +20,12 @@ const shopModal = document.getElementById("modal-container")!;
 const shopItemsContainer = document.getElementById("shop-items")!;
 const modalClose = document.getElementById("modal-close")!;
 
-const game = new Game(canvas, ctx, explosionContainer, shopModal, shopItemsContainer, reloadScreen);
+const terminateToAshes = () => {
+  game = new Game(canvas, ctx, explosionContainer, shopModal, shopItemsContainer, reloadScreen, terminateToAshes);
+  game.start()
+}
+
+let game = new Game(canvas, ctx, explosionContainer, shopModal, shopItemsContainer, reloadScreen, terminateToAshes);
 
 game.start()
 

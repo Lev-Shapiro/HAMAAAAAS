@@ -7,6 +7,7 @@ import { HelicopterMissileService } from "./helicopter/helicopter-missile.servic
 import { HelicopterService } from "./helicopter/helicopter.service";
 import { MenuService } from "./menu.service";
 import { RecoilService } from "./recoil";
+import { ScoreCounter } from "./score-counter";
 import { ShopUI } from "./shop-ui";
 import { TerroristType } from "./terrorist-type.enum";
 import { TerroristWavesService } from "./terrorist-waves.service";
@@ -30,6 +31,7 @@ export class GameServices {
   helicopterMissileService: HelicopterMissileService;
   explosionService: ExplosionService;
   shopUI: ShopUI;
+  scoreCounter: ScoreCounter;
 
   constructor(
     public canvas: HTMLCanvasElement,
@@ -37,7 +39,8 @@ export class GameServices {
     public explosionContainer: HTMLElement,
     public shopModal: HTMLElement,
     public shopItems: HTMLElement,
-    public reloadScreen: HTMLElement
+    public reloadScreen: HTMLElement,
+    public terminateToAshes: () => void
   ) {
     const ammoLeftInfo = new DataModel(canvas, ctx, {
       value: 0,
@@ -54,7 +57,7 @@ export class GameServices {
     });
 
     const coinBank = new DataModel(canvas, ctx, {
-      value: 4000,
+      value: 0,
       icon: "/coin.webp",
       iconWidth: 30,
       iconHeight: 30,
@@ -98,7 +101,7 @@ export class GameServices {
           height: 70,
         },
         [TerroristType.CAR_TERRORIST]: {
-          speed: 60,
+          speed: 80,
           health: 500,
           width: 70,
           height: 70,
@@ -109,6 +112,12 @@ export class GameServices {
           width: 412 / 4,
           height: 606 / 4,
         },
+        [TerroristType.BOMBER]: {
+          speed: 60,
+          health: 250,
+          width: 119 / 4,
+          height: 256 / 4,
+        }
       },
       healthInfo
     );
@@ -140,7 +149,6 @@ export class GameServices {
       height: 200,
     });
 
-    const menuService = new MenuService(canvas, ctx);
     const terroristWavesService = new TerroristWavesService(
       canvas,
       ctx,
@@ -148,8 +156,10 @@ export class GameServices {
       explosionService,
       coinBank
     );
-
+    
     const shopUI = new ShopUI(coinBank, shopModal, shopItems);
+    const scoreCounter = new ScoreCounter();
+    const menuService = new MenuService(canvas, ctx, scoreCounter, healthInfo);
 
     this.ammoLeftInfo = ammoLeftInfo;
     this.healthInfo = healthInfo;
@@ -167,5 +177,6 @@ export class GameServices {
     this.helicopterMissileService = helicopterMissileService;
     this.shopUI = shopUI;
     this.explosionService = explosionService;
+    this.scoreCounter = scoreCounter;
   }
 }
