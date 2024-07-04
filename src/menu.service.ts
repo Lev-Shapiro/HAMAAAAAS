@@ -169,8 +169,7 @@ export class MenuService {
     const buttonX = (this.canvasW - this.BUTTON_WIDTH) / 2;
     const buttonY =
       (this.canvasH - this.BUTTON_HEIGHT) / 2 +
-      32 * (index + 1) +
-      this.BUTTON_HEIGHT * index;
+      (30 + this.BUTTON_HEIGHT) * index;
 
     return {
       buttonX,

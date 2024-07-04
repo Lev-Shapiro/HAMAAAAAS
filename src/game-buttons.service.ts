@@ -9,7 +9,7 @@ export class GameButtonsService {
 
   private getButtonPosition(index: number) {
     const buttonX = this.canvas.width - 40;
-    const buttonY = this.canvas.height - 40 - index * 60;
+    const buttonY = this.canvas.height - 80 - index * 60;
 
     return { buttonX, buttonY };
   }
@@ -60,9 +60,6 @@ export class GameButtonsService {
       const shopButton = this.getButtonPosition(1);
       const menuButton = this.getButtonPosition(2);
 
-      this.testSquare(reloadButton.buttonX - 25, reloadButton.buttonY - 25);
-      this.testSquare(reloadButton.buttonX + 25, reloadButton.buttonY + 25);
-
       canvas.addEventListener("click", () => {
         const mouseX = this.recoilService.cursorX;
         const mouseY = this.recoilService.cursorY;
@@ -91,10 +88,5 @@ export class GameButtonsService {
         }
       });
     });
-  }
-
-  private testSquare(x: number, y: number) {
-    this.ctx.fillStyle = "red";
-    this.ctx.fillRect(x - 2.5, y - 2.5, 5, 5);
   }
 }
