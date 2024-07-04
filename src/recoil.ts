@@ -34,6 +34,13 @@ export class RecoilService {
     if(this.cursorY > this.canvas.height) this.cursorY = this.canvas.height - 20;
   }
 
+  updateCursorPositionTouch(touch: Touch) {
+    console.log(touch);
+    
+    this.cursorX = touch.clientX;
+    this.cursorY = touch.clientY;
+  }
+
   recoil() {
     this.cursorY -= this.recoilDistance;
   }
