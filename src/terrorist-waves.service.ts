@@ -2,7 +2,7 @@ import { DataModel } from "./data/data.model";
 import { TerroristService } from "./terrorist.service";
 
 export class TerroristWavesService {
-  currentWave = 0;
+  currentWave = 30;
 
   constructor(
     private canvas: HTMLCanvasElement,

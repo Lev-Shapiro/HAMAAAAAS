@@ -80,7 +80,7 @@ export class TerroristService {
       // Let's assume that 100mph = 1px per second
       this.terrorists[i].y += this.terrorists[i].speed / 100;
 
-      if (this.terrorists[i].y > this.canvas.height * 0.83) {
+      if (this.terrorists[i].y + this.terrorists[i].height > this.canvas.height * 0.83) {
         this.healthInfo.data.value -= 1;
         this.terrorists.splice(i, 1);
       }

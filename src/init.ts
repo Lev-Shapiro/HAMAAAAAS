@@ -36,7 +36,8 @@ export class GameServices {
     public ctx: CanvasRenderingContext2D,
     public explosionContainer: HTMLElement,
     public shopModal: HTMLElement,
-    public shopItems: HTMLElement
+    public shopItems: HTMLElement,
+    public reloadScreen: HTMLElement
   ) {
     const ammoLeftInfo = new DataModel(canvas, ctx, {
       value: 0,
@@ -88,7 +89,8 @@ export class GameServices {
     const userBulletService = new UserBulletService(
       bulletService,
       ammoLeftInfo,
-      upgrades
+      upgrades,
+      reloadScreen
     );
 
     const recoilService = new RecoilService(canvas, ctx);

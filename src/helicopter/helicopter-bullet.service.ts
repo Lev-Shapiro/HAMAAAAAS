@@ -28,9 +28,9 @@ export class HelicopterBulletService {
   }
 
   async launchFromHelicopter(helicopter: Helicopter, targets: Terrorist[]) {
-    var j = 0;
+    var j = helicopter.bulletCapacity - 1;
 
-    for (; j < helicopter.bulletCapacity; j++) {
+    for (; j >= 0; j--) {
       const terrorist = targets[j];
 
       if (!terrorist) break;
@@ -44,12 +44,10 @@ export class HelicopterBulletService {
 
       if (Math.abs(targetX - helicopter.x) > this.canvas.width * 0.4) break;
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
       this.spawnBullet(helicopter, targetX, targetY);
     }
 
-    helicopter.bulletCapacity -= j;
+    helicopter.bulletCapacity = j;
   }
 
   async spawnAllBullets() {

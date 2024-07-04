@@ -15,11 +15,12 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const explosionContainer = document.body;
+const reloadScreen = document.getElementById("reload-screen")!;
 const shopModal = document.getElementById("modal-container")!;
 const shopItemsContainer = document.getElementById("shop-items")!;
 const modalClose = document.getElementById("modal-close")!;
 
-const game = new Game(canvas, ctx, explosionContainer, shopModal, shopItemsContainer);
+const game = new Game(canvas, ctx, explosionContainer, shopModal, shopItemsContainer, reloadScreen);
 
 game.start()
 
