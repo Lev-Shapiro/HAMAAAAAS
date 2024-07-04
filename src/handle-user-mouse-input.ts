@@ -79,13 +79,13 @@ export async function handleUserMouseInput(
   // PC
   canvas.addEventListener("mousedown", handleShootAttempt);
   canvas.addEventListener("mousemove", handleMouseMove);
-  // canvas.addEventListener("click", handlePressShoot);
+  canvas.addEventListener("click", handleShootAttempt);
 
   // Mobile
   canvas.addEventListener("touchstart", handleShootAttempt);
   canvas.addEventListener("touchmove", handleTouchMove);
 
-  document.addEventListener("keydown", handleKeyPress);
+  if(!isMobile()) document.addEventListener("keydown", handleKeyPress);
 
   function handleLock() {
     if (document.pointerLockElement === canvas) {
@@ -101,7 +101,7 @@ export async function handleUserMouseInput(
       canvas.removeEventListener("touchmove", handleTouchMove);
       canvas.removeEventListener("touchend", handleMouseUp);
 
-      document.removeEventListener("keydown", handleKeyPress);
+      if (!isMobile()) document.removeEventListener("keydown", handleKeyPress);
       if(!isMobile()) document.removeEventListener("pointerlockchange", handleLock);
     }
   }

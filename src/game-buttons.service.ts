@@ -31,62 +31,50 @@ export class GameButtonsService {
     ctx.drawImage(img, buttonX - 12.5, buttonY - 12.5, 25, 25);
   }
 
-  async renderGameButtons(
-    openShop: () => void,
-    openMenu: () => void,
-    reload: () => void
-  ) {
+  async drawGameButtons() {
     // Reload, Shop and Menu buttons at the right-bottom of the screen
     this.drawButton(0, "/reload.webp");
     this.drawButton(1, "/shop.png");
     this.drawButton(2, "/menu.png");
-
-    const buttonName = await this.handleCanvasClick();
-
-    if (buttonName === "reload") {
-      reload();
-    } else if (buttonName === "shop") {
-      openShop();
-    } else if (buttonName === "menu") {
-      openMenu();
-    }
   }
 
-  private handleCanvasClick() {
-    return new Promise((resolve) => {
-      const canvas = this.canvas;
+  handleGameButtonClick(
+    openShop: () => void,
+    openMenu: () => void,
+    reload: () => void
+  ) {
+    const canvas = this.canvas;
 
-      const reloadButton = this.getButtonPosition(0);
-      const shopButton = this.getButtonPosition(1);
-      const menuButton = this.getButtonPosition(2);
+    const reloadButton = this.getButtonPosition(0);
+    const shopButton = this.getButtonPosition(1);
+    const menuButton = this.getButtonPosition(2);
 
-      canvas.addEventListener("click", () => {
-        const mouseX = this.recoilService.cursorX;
-        const mouseY = this.recoilService.cursorY;
+    canvas.addEventListener("click", () => {
+      const mouseX = this.recoilService.cursorX;
+      const mouseY = this.recoilService.cursorY;
 
-        if (
-          mouseX >= reloadButton.buttonX - 25 &&
-          mouseX <= reloadButton.buttonX + 25 &&
-          mouseY >= reloadButton.buttonY - 25 &&
-          mouseY <= reloadButton.buttonY + 25
-        ) {
-          resolve("reload");
-        } else if (
-          mouseX >= shopButton.buttonX - 25 &&
-          mouseX <= shopButton.buttonX + 25 &&
-          mouseY >= shopButton.buttonY - 25 &&
-          mouseY <= shopButton.buttonY + 25
-        ) {
-          resolve("shop");
-        } else if (
-          mouseX >= menuButton.buttonX - 25 &&
-          mouseX <= menuButton.buttonX + 25 &&
-          mouseY >= menuButton.buttonY - 25 &&
-          mouseY <= menuButton.buttonY + 25
-        ) {
-          resolve("menu");
-        }
-      });
+      if (
+        mouseX >= reloadButton.buttonX - 25 &&
+        mouseX <= reloadButton.buttonX + 25 &&
+        mouseY >= reloadButton.buttonY - 25 &&
+        mouseY <= reloadButton.buttonY + 25
+      ) {
+        reload();
+      } else if (
+        mouseX >= shopButton.buttonX - 25 &&
+        mouseX <= shopButton.buttonX + 25 &&
+        mouseY >= shopButton.buttonY - 25 &&
+        mouseY <= shopButton.buttonY + 25
+      ) {
+        openShop();
+      } else if (
+        mouseX >= menuButton.buttonX - 25 &&
+        mouseX <= menuButton.buttonX + 25 &&
+        mouseY >= menuButton.buttonY - 25 &&
+        mouseY <= menuButton.buttonY + 25
+      ) {
+        openMenu();
+      }
     });
   }
 }

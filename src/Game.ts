@@ -37,6 +37,12 @@ export class Game extends GameServices {
       () => this.openShop(),
       () => this.openGameMenu()
     );
+
+    this.gameButtons.handleGameButtonClick(
+      () => this.openShop(),
+      () => this.openGameMenu(),
+      () => this.userBulletService.reload()
+    )
   }
 
   private startGameLoop() {
@@ -61,14 +67,10 @@ export class Game extends GameServices {
     this.ammoLeftInfo.drawData(0);
     this.healthInfo.drawData(1);
     this.coinBank.drawData(2);
-    this.gameButtons.renderGameButtons(
-      () => this.openShop(),
-      () => this.openGameMenu(),
-      () => this.userBulletService.reload()
-    );
 
     // Draw everything
     this.terroristWaves.drawWaveNumber();
+    this.gameButtons.drawGameButtons();
     this.helicopterService.drawAllHelicopters();
     if (this.terroristWaves.currentWave < 200)
       this.bulletService.drawAllBallisticObjects();
