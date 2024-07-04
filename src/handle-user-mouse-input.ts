@@ -2,7 +2,7 @@ import { isMobile } from "./isMobile";
 import { RecoilService } from "./recoil";
 import { UserBulletService } from "./user-bullet.service";
 
-export async function handleUserMouseInput(
+export function handleUserMouseInput(
   canvas: HTMLCanvasElement,
   recoilService: RecoilService,
   bulletService: UserBulletService,
@@ -20,7 +20,7 @@ export async function handleUserMouseInput(
     recoilService.updateCursorPositionTouch(e.touches[0]);
   }
 
-  function handleMouseUp() {
+  function handleResetShootInterval() {
     clearInterval(interval);
   }
 
@@ -35,26 +35,16 @@ export async function handleUserMouseInput(
       recoilService.recoil();
     }, 100);
 
-    // PC
-    canvas.addEventListener("mouseup", handleMouseUp, {
-      once: true,
-    });
-
-    // Mobile
-    canvas.addEventListener("touchend", handleMouseUp, {
-      once: true,
-    });
+    if (isMobile()) {
+      canvas.addEventListener("touchend", handleResetShootInterval, {
+        once: true,
+      });
+    } else {
+      canvas.addEventListener("mouseup", handleResetShootInterval, {
+        once: true,
+      });
+    }
   };
-
-  // const handlePressShoot = () => {
-  //   const dx = recoilService.cursorX - canvas.width / 2;
-  //   const dy = recoilService.cursorY - canvas.height;
-
-  //   const angle = Math.atan2(dy, dx);
-
-  //   bulletService.spawnBullet(canvas.width / 2, canvas.height, angle);
-  //   recoilService.recoil();
-  // };
 
   function handleKeyPress(e: KeyboardEvent) {
     // M = Menu
@@ -76,35 +66,30 @@ export async function handleUserMouseInput(
     }
   }
 
-  // PC
-  canvas.addEventListener("mousedown", handleShootAttempt);
-  canvas.addEventListener("mousemove", handleMouseMove);
-  canvas.addEventListener("click", handleShootAttempt);
+  if (isMobile()) {
+    canvas.addEventListener("touchstart", handleShootAttempt);
+    canvas.addEventListener("touchmove", handleTouchMove);
+  } else {
+    canvas.addEventListener("mousedown", handleShootAttempt);
+    canvas.addEventListener("mousemove", handleMouseMove);
+    // canvas.addEventListener("click", handleShootAttempt);
 
-  // Mobile
-  canvas.addEventListener("touchstart", handleShootAttempt);
-  canvas.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("keydown", handleKeyPress);
+  }
 
-  if(!isMobile()) document.addEventListener("keydown", handleKeyPress);
-
-  function handleLock() {
-    if (document.pointerLockElement === canvas) {
-      // ** Pointer lock is active
-    } else {
-      // ** Pointer lock is no longer active
-
-      canvas.removeEventListener("mousedown", handleShootAttempt);
-      canvas.removeEventListener("mouseup", handleMouseUp);
-      canvas.removeEventListener("mousemove", handleMouseMove);
-
+  function deactivateUserMotion() {
+    if (isMobile()) {
       canvas.removeEventListener("touchstart", handleShootAttempt);
       canvas.removeEventListener("touchmove", handleTouchMove);
-      canvas.removeEventListener("touchend", handleMouseUp);
+      canvas.removeEventListener("touchend", handleResetShootInterval);
+    } else {
+      canvas.removeEventListener("mousedown", handleShootAttempt);
+      canvas.removeEventListener("mouseup", handleResetShootInterval);
+      canvas.removeEventListener("mousemove", handleMouseMove);
 
-      if (!isMobile()) document.removeEventListener("keydown", handleKeyPress);
-      if(!isMobile()) document.removeEventListener("pointerlockchange", handleLock);
+      document.removeEventListener("keydown", handleKeyPress);
     }
   }
 
-  if(!isMobile()) document.addEventListener("pointerlockchange", handleLock);
+  return deactivateUserMotion;
 }

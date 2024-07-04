@@ -1,4 +1,5 @@
 import { DataModel } from "./data/data.model";
+import { RecoilService } from "./recoil";
 import { ScoreCounter } from "./score-counter";
 
 export class MenuService {
@@ -13,7 +14,8 @@ export class MenuService {
     private ctx: CanvasRenderingContext2D,
     // Used to identify the status of the game to generate appropriate menu
     private scoreCounter: ScoreCounter,
-    private healthInfo: DataModel
+    private healthInfo: DataModel,
+    private recoilService: RecoilService
   ) {
     this.canvasW = this.canvas.width;
     this.canvasH = this.canvas.height;
@@ -78,8 +80,7 @@ export class MenuService {
       if (this.scoreCounter.score >= 2) {
         this.drawColorfulText(this.canvasW / 2, modalY + 50, [
           {
-            text:
-              "Killed " + this.scoreCounter.score + " terrorists!",
+            text: "Killed " + this.scoreCounter.score + " terrorists!",
           },
         ]);
       } else {
@@ -89,7 +90,7 @@ export class MenuService {
       }
 
       ctx.font = "bold 24px Arial";
-      
+
       this.drawColorfulText(this.canvasW / 2, modalY + 150, [
         { text: `SCORE: ${this.scoreCounter.score}`, color: "#4CAF50" },
       ]);
@@ -138,16 +139,16 @@ export class MenuService {
     return new Promise<void>((resolve) => {
       let lastSetupTime = 0;
 
-      const handleClick = async (event: MouseEvent) => {
+      const handleClick = async () => {
         const elapsedTime = Date.now() - lastSetupTime;
         if (elapsedTime < 1500) {
           await new Promise((r) => setTimeout(r, 1500 - elapsedTime));
         }
 
-        const { buttonX, buttonY } = this.getButtonCoordsByIndex(0);
+        const clickX = this.recoilService.cursorX,
+          clickY = this.recoilService.cursorY;
 
-        const clickX = event.clientX;
-        const clickY = event.clientY;
+        const { buttonX, buttonY } = this.getButtonCoordsByIndex(0);
 
         if (
           clickX >= buttonX &&

@@ -8,6 +8,7 @@ import { Terrorist } from "./terrorist.service";
 // TODO: Separate functionality in this class
 export class Game extends GameServices {
   private spawnerInterval: number = 0;
+  private deactivateUserMotion: () => void = () => {};
 
   isGameActive = false;
 
@@ -30,7 +31,7 @@ export class Game extends GameServices {
       this.helicopterMissileService.spawnAllMissiles();
     }, 100);
 
-    handleUserMouseInput(
+    this.deactivateUserMotion = handleUserMouseInput(
       this.canvas,
       this.recoilService,
       this.userBulletService,
@@ -214,6 +215,7 @@ export class Game extends GameServices {
 
   async openShop() {
     clearInterval(this.spawnerInterval);
+    this.deactivateUserMotion();
     this.helicopterService.developerResetReloadIntervals();
 
     if(!isMobile()) document.exitPointerLock();
@@ -263,6 +265,7 @@ export class Game extends GameServices {
 
   async openGameMenu() {
     clearInterval(this.spawnerInterval);
+    this.deactivateUserMotion();
     this.helicopterService.developerResetReloadIntervals();
 
     this.isGameActive = false;
