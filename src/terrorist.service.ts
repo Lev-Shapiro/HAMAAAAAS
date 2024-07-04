@@ -76,13 +76,17 @@ export class TerroristService {
   }
 
   rerenderTerrorists() {
-    for (let i = this.terrorists.length - 1; i >= 0; i--) {
-      // Let's assume that 100mph = 1px per second
-      this.terrorists[i].y += this.terrorists[i].speed / 100;
+    const terrorists = this.terrorists;
 
-      if (this.terrorists[i].y + this.terrorists[i].height > this.canvas.height * 0.83) {
-        this.healthInfo.data.value -= 1;
-        this.terrorists.splice(i, 1);
+    for (let i = terrorists.length - 1; i >= 0; i--) {
+      const terrorist = terrorists[i];
+
+      // Let's assume that 100mph = 1px per second
+      terrorist.y += terrorist.speed / 100;
+
+      if (terrorist.y + terrorist.height > this.canvas.height * 0.83) {
+        this.lowerHealth(terrorist);
+        terrorists.splice(i, 1);
       }
     }
   }
@@ -126,5 +130,19 @@ export class TerroristService {
       y: this.canvas.height * (0.2 + Math.random() * 0.1),
       ...this.terroristInfo[type],
     };
+  }
+
+  private lowerHealth(terrorist: Terrorist) {
+    switch (terrorist.type) {
+      case TerroristType.SOLIDER:
+        this.healthInfo.data.value -= 1;
+        break;
+      case TerroristType.CAR_TERRORIST:
+        this.healthInfo.data.value -= 5;
+        break;
+      case TerroristType.SINWAR:
+        this.healthInfo.data.value -= 50;
+        break;
+    }
   }
 }
