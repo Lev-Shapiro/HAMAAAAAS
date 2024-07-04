@@ -1,3 +1,5 @@
+import { isMobile } from "./isMobile";
+
 export class RecoilService {
   recoilDistance = 10;
 
@@ -42,6 +44,8 @@ export class RecoilService {
   }
 
   recoil() {
+    if(isMobile()) return;
+    
     this.cursorY -= this.recoilDistance;
   }
 }

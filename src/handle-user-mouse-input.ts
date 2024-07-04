@@ -1,3 +1,4 @@
+import { isMobile } from "./isMobile";
 import { RecoilService } from "./recoil";
 import { UserBulletService } from "./user-bullet.service";
 
@@ -16,8 +17,6 @@ export async function handleUserMouseInput(
   }
 
   function handleTouchMove(e: TouchEvent) {
-    console.log('Touch event:', e);
-
     recoilService.updateCursorPositionTouch(e.touches[0]);
   }
 
@@ -103,9 +102,9 @@ export async function handleUserMouseInput(
       canvas.removeEventListener("touchend", handleMouseUp);
 
       document.removeEventListener("keydown", handleKeyPress);
-      document.removeEventListener("pointerlockchange", handleLock);
+      if(!isMobile()) document.removeEventListener("pointerlockchange", handleLock);
     }
   }
 
-  document.addEventListener("pointerlockchange", handleLock);
+  if(!isMobile()) document.addEventListener("pointerlockchange", handleLock);
 }

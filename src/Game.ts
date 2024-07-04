@@ -1,6 +1,7 @@
 import { BallisticObject } from "./ballistic/ballistic-object.service";
 import { handleUserMouseInput } from "./handle-user-mouse-input";
 import { GameServices } from "./init";
+import { isMobile } from "./isMobile";
 import { TerroristType } from "./terrorist-type.enum";
 import { Terrorist } from "./terrorist.service";
 
@@ -14,7 +15,7 @@ export class Game extends GameServices {
 
   continueGame() {
     this.isGameActive = true;
-    this.canvas.requestPointerLock();
+    if(!isMobile()) this.canvas.requestPointerLock();
 
     this.startGameLoop();
 
@@ -217,7 +218,7 @@ export class Game extends GameServices {
   }
 
   private async openShop() {
-    document.exitPointerLock();
+    if(!isMobile()) document.exitPointerLock();
     this.isGameActive = false;
     this.refreshShop();
     this.shopUI.openModalIfClosed();
@@ -264,7 +265,7 @@ export class Game extends GameServices {
 
   async openGameMenu() {
     this.isGameActive = false;
-    document.exitPointerLock();
+    if(!isMobile()) document.exitPointerLock();
 
     this.shopUI.closeModalIfOpened();
     await this.menuService.waitUntilUserPressesContinue();
