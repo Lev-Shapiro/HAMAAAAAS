@@ -7,6 +7,8 @@ import { Terrorist } from "./terrorist.service";
 
 // TODO: Separate functionality in this class
 export class Game extends GameServices {
+  private spawnerInterval: number = 0;
+
   isGameActive = false;
 
   start() {
@@ -21,33 +23,19 @@ export class Game extends GameServices {
 
     this.helicopterService.reloadAmmo();
 
-    const spawnerInterval = setInterval(() => {
+    this.spawnerInterval = setInterval(() => {
       this.terroristWaves.spawnTerroristWave();
 
       this.helicopterBulletService.spawnAllBullets();
       this.helicopterMissileService.spawnAllMissiles();
     }, 100);
 
-    const openShop = () => {
-      clearInterval(spawnerInterval);
-      this.helicopterService.developerResetReloadIntervals();
-
-      this.openShop();
-    };
-
-    const openGameMenu = () => {
-      clearInterval(spawnerInterval);
-      this.helicopterService.developerResetReloadIntervals();
-
-      this.openGameMenu();
-    };
-
     handleUserMouseInput(
       this.canvas,
       this.recoilService,
       this.userBulletService,
-      () => openShop(),
-      () => openGameMenu()
+      () => this.openShop(),
+      () => this.openGameMenu()
     );
   }
 
@@ -73,6 +61,11 @@ export class Game extends GameServices {
     this.ammoLeftInfo.drawData(0);
     this.healthInfo.drawData(1);
     this.coinBank.drawData(2);
+    this.gameButtons.renderGameButtons(
+      () => this.openShop(),
+      () => this.openGameMenu(),
+      () => this.userBulletService.reload()
+    );
 
     // Draw everything
     this.terroristWaves.drawWaveNumber();
@@ -217,7 +210,10 @@ export class Game extends GameServices {
     );
   }
 
-  private async openShop() {
+  async openShop() {
+    clearInterval(this.spawnerInterval);
+    this.helicopterService.developerResetReloadIntervals();
+
     if(!isMobile()) document.exitPointerLock();
     this.isGameActive = false;
     this.refreshShop();
@@ -264,6 +260,9 @@ export class Game extends GameServices {
   }
 
   async openGameMenu() {
+    clearInterval(this.spawnerInterval);
+    this.helicopterService.developerResetReloadIntervals();
+
     this.isGameActive = false;
     if(!isMobile()) document.exitPointerLock();
 

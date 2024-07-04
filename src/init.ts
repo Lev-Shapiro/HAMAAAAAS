@@ -1,6 +1,7 @@
 import { BallisticObjectService } from "./ballistic/ballistic-object.service";
 import { DataModel } from "./data/data.model";
 import { ExplosionService } from "./explosion.service";
+import { GameButtonsService } from "./game-buttons.service";
 import { GameUpgrades } from "./game-upgrades";
 import { HelicopterBulletService } from "./helicopter/helicopter-bullet.service";
 import { HelicopterMissileService } from "./helicopter/helicopter-missile.service";
@@ -32,6 +33,7 @@ export class GameServices {
   explosionService: ExplosionService;
   shopUI: ShopUI;
   scoreCounter: ScoreCounter;
+  gameButtons: GameButtonsService;
 
   constructor(
     public canvas: HTMLCanvasElement,
@@ -161,6 +163,12 @@ export class GameServices {
     const scoreCounter = new ScoreCounter();
     const menuService = new MenuService(canvas, ctx, scoreCounter, healthInfo);
 
+    const gameButtons = new GameButtonsService(
+      canvas,
+      ctx,
+      recoilService,
+    );
+
     this.ammoLeftInfo = ammoLeftInfo;
     this.healthInfo = healthInfo;
     this.coinBank = coinBank;
@@ -178,5 +186,6 @@ export class GameServices {
     this.shopUI = shopUI;
     this.explosionService = explosionService;
     this.scoreCounter = scoreCounter;
+    this.gameButtons = gameButtons;
   }
 }
