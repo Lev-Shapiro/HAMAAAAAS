@@ -1,5 +1,4 @@
 import { UpgradeItem } from "../game-upgrades";
-import { createImage } from "../tools/createImage";
 
 interface BallisticObjectOptions {
   speed: number;
@@ -30,7 +29,10 @@ export class BallisticObjectService {
     private ctx: CanvasRenderingContext2D,
     private options: BallisticObjectOptions
   ) {
-    this.objectImage = createImage(this.options.image);
+    const img = new Image();
+    img.src = this.options.image;
+
+    this.objectImage = img;
   }
 
   drawBallisticObject(object: BallisticObject) {

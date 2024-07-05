@@ -130,7 +130,16 @@ export class MenuService {
     ctx.fillText(
       "© 2024 Lev Shapiro - All rights reserved",
       this.canvasW / 2,
-      modalY + modalHeight - 40
+      modalY + modalHeight - 60
+    );
+
+    // Add a link to Linkedin Profile
+    ctx.font = "14px Arial";
+
+    ctx.fillText(
+      "Linkedin: https://www.linkedin.com/in/levshapiro/",
+      this.canvasW / 2,
+      modalY + modalHeight - 20
     );
   }
 

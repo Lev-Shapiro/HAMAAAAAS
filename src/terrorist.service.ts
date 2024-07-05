@@ -37,16 +37,20 @@ export class TerroristService {
 
     switch (terrorist.type) {
       case TerroristType.SOLIDER:
-        image.src = "/terrorist.gif";
+        image.src = "/terrorist.webp";
+        image.alt = "Terrorist image";
         break;
       case TerroristType.BOMBER:
         image.src = "/suicide-bomber.webp";
+        image.alt = "Suicide Bomber image";
         break;
       case TerroristType.CAR_TERRORIST:
         image.src = "/terrorist_wcar.webp";
+        image.alt = "Car image";
         break;
       case TerroristType.SINWAR:
         image.src = "/sinwar.webp";
+        image.alt = "Sinwar image";
         break;
     }
 

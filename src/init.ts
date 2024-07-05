@@ -127,7 +127,7 @@ export class GameServices {
     const helicopterService = new HelicopterService(canvas, ctx, upgrades, {
       width: 70,
       height: 70,
-      image: "/helicopter.png",
+      image: "/helicopter.webp",
     });
 
     const helicopterBulletService = new HelicopterBulletService(

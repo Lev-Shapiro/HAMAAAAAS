@@ -90,7 +90,7 @@ export class GameUpgrades {
   helicopter = new UpgradeItem(
     "Helicopter",
     6,
-    "/helicopter.png",
+    "/helicopter.webp",
     "Buy a helicopter",
     (level) => {
       return {
@@ -103,7 +103,7 @@ export class GameUpgrades {
   helicopterBulletReloadSpeed = new UpgradeItem(
     "Helicopter Bullet Reload Speed",
     100,
-    "/helicopter.png",
+    "/helicopter.webp",
     "Increase bullet reload speed of a helicopter",
     (level) => {
       const basePrice = 1000;
@@ -122,7 +122,7 @@ export class GameUpgrades {
   helicopterMissileReloadSpeed = new UpgradeItem(
     "Helicopter Missile Reload Speed",
     25,
-    "/helicopter.png",
+    "/helicopter.webp",
     "Increase missile reload speed of a helicopter",
     (level) => {
       const basePrice = 2000;
@@ -140,7 +140,7 @@ export class GameUpgrades {
   helicopterMissileDamage = new UpgradeItem(
     "Helicopter Missile Damage",
     1,
-    "/helicopter.png",
+    "/helicopter.webp",
     "Increase missile damage of a helicopter",
     () => ({
       price: 0,

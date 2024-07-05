@@ -13,7 +13,7 @@ export class GameButtonsService {
     return { buttonX, buttonY };
   }
 
-  private drawButton(index: number, image: string) {
+  private drawButton(index: number, image: string, alt: string) {
     const ctx = this.ctx;
     const { buttonX, buttonY } = this.getButtonPosition(index);
 
@@ -26,6 +26,7 @@ export class GameButtonsService {
 
     // Draw image
     const img = new Image(25, 25);
+    img.alt = alt;
     img.src = image;
 
     ctx.drawImage(img, buttonX - 12.5, buttonY - 12.5, 25, 25);
@@ -33,9 +34,9 @@ export class GameButtonsService {
 
   drawGameButtons() {
     // Reload, Shop and Menu buttons at the right-bottom of the screen
-    this.drawButton(0, "/reload.webp");
-    this.drawButton(1, "/shop.png");
-    this.drawButton(2, "/menu.png");
+    this.drawButton(0, "/reload.webp", "Reload gun button");
+    this.drawButton(1, "/shop.webp", "Shop button");
+    this.drawButton(2, "/menu.webp", "Menu button");
   }
 
   handleGameButtonClick(

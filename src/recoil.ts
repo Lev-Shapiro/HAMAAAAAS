@@ -21,10 +21,11 @@ export class RecoilService {
 
   drawCursor() {
     if(isMobile()) return;
-    
+
     this.ctx.beginPath();
     const img = new Image();
     img.src = "/cursor.png";
+    img.alt = "Target Cursor image";
     this.ctx.drawImage(img, this.cursorX - 5, this.cursorY - 5, 20, 20);
   }
 
