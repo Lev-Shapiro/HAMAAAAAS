@@ -1,4 +1,5 @@
 import { DataModel } from "./data/data.model";
+import { isMobile } from "./isMobile";
 import { TerroristType } from "./terrorist-type.enum";
 
 type TerroristInformation = {
@@ -85,7 +86,8 @@ export class TerroristService {
       const terrorist = terrorists[i];
 
       // Let's assume that 100mph = 1px per second
-      terrorist.y += terrorist.speed / 100;
+      // When on mobile device then the speed will be slower
+      terrorist.y += terrorist.speed / (isMobile() ? 150 : 100);
 
       if (terrorist.y + terrorist.height > this.canvas.height * 0.83) {
         this.lowerHealth(terrorist);

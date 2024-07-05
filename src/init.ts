@@ -166,7 +166,6 @@ export class GameServices {
     const gameButtons = new GameButtonsService(
       canvas,
       ctx,
-      recoilService,
     );
 
     this.ammoLeftInfo = ammoLeftInfo;

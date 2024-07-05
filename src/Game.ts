@@ -71,13 +71,13 @@ export class Game extends GameServices {
 
     // Draw everything
     this.terroristWaves.drawWaveNumber();
-    this.gameButtons.drawGameButtons();
     this.helicopterService.drawAllHelicopters();
     if (this.terroristWaves.currentWave < 200)
       this.bulletService.drawAllBallisticObjects();
     this.missileService.drawAllBallisticObjects();
     this.terroristService.drawAllTerrorists();
     this.recoilService.drawCursor();
+    this.gameButtons.drawGameButtons();
 
     requestAnimationFrame(() => this.startGameLoop());
   }

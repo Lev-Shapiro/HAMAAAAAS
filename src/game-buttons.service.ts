@@ -1,15 +1,14 @@
-import { RecoilService } from "./recoil";
+import { isMobile } from "./isMobile";
 
 export class GameButtonsService {
   constructor(
     private canvas: HTMLCanvasElement,
-    private ctx: CanvasRenderingContext2D,
-    private recoilService: RecoilService
+    private ctx: CanvasRenderingContext2D
   ) {}
 
   private getButtonPosition(index: number) {
     const buttonX = this.canvas.width - 40;
-    const buttonY = this.canvas.height - 80 - index * 60;
+    const buttonY = this.canvas.height - index * 60 - (isMobile() ? 80 : 40);
 
     return { buttonX, buttonY };
   }
@@ -26,12 +25,13 @@ export class GameButtonsService {
     ctx.stroke();
 
     // Draw image
-    const img = new Image();
+    const img = new Image(25, 25);
     img.src = image;
+
     ctx.drawImage(img, buttonX - 12.5, buttonY - 12.5, 25, 25);
   }
 
-  async drawGameButtons() {
+  drawGameButtons() {
     // Reload, Shop and Menu buttons at the right-bottom of the screen
     this.drawButton(0, "/reload.webp");
     this.drawButton(1, "/shop.png");
@@ -43,38 +43,42 @@ export class GameButtonsService {
     openMenu: () => void,
     reload: () => void
   ) {
-    const canvas = this.canvas;
+    const canvas = this.canvas,
+      rect = canvas.getBoundingClientRect();
 
     const reloadButton = this.getButtonPosition(0);
     const shopButton = this.getButtonPosition(1);
     const menuButton = this.getButtonPosition(2);
 
-    canvas.addEventListener("click", () => {
-      const mouseX = this.recoilService.cursorX;
-      const mouseY = this.recoilService.cursorY;
+    const handleClick = (event: MouseEvent) => {
+      const cursorX = event.clientX - rect.left;
+      const cursorY = event.clientY - rect.top;
 
       if (
-        mouseX >= reloadButton.buttonX - 25 &&
-        mouseX <= reloadButton.buttonX + 25 &&
-        mouseY >= reloadButton.buttonY - 25 &&
-        mouseY <= reloadButton.buttonY + 25
+        cursorX >= reloadButton.buttonX - 25 &&
+        cursorX <= reloadButton.buttonX + 25 &&
+        cursorY >= reloadButton.buttonY - 25 &&
+        cursorY <= reloadButton.buttonY + 25
       ) {
         reload();
       } else if (
-        mouseX >= shopButton.buttonX - 25 &&
-        mouseX <= shopButton.buttonX + 25 &&
-        mouseY >= shopButton.buttonY - 25 &&
-        mouseY <= shopButton.buttonY + 25
+        cursorX >= shopButton.buttonX - 25 &&
+        cursorX <= shopButton.buttonX + 25 &&
+        cursorY >= shopButton.buttonY - 25 &&
+        cursorY <= shopButton.buttonY + 25
       ) {
         openShop();
       } else if (
-        mouseX >= menuButton.buttonX - 25 &&
-        mouseX <= menuButton.buttonX + 25 &&
-        mouseY >= menuButton.buttonY - 25 &&
-        mouseY <= menuButton.buttonY + 25
+        cursorX >= menuButton.buttonX - 25 &&
+        cursorX <= menuButton.buttonX + 25 &&
+        cursorY >= menuButton.buttonY - 25 &&
+        cursorY <= menuButton.buttonY + 25
       ) {
+        canvas.removeEventListener("click", handleClick);
         openMenu();
       }
-    });
+    };
+
+    canvas.addEventListener("click", handleClick);
   }
 }

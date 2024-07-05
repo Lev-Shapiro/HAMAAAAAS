@@ -10,19 +10,41 @@ export function handleUserMouseInput(
   handleToggleShop: () => void,
   handleOpenMenu: () => void
 ) {
-  let interval: number;
+  let interval: number | null = null;
 
   function handleMouseMove(e: MouseEvent) {
     recoilService.updateCursorPosition(e);
   }
 
-  function handleTouchMove(e: TouchEvent) {
-    recoilService.updateCursorPositionTouch(e.touches[0]);
+  // function handleTouchMove(e: TouchEvent) {
+  //   recoilService.updateCursorPositionTouch(e.touches[0]);
+  // }
+
+  function handleTouchStart(e: TouchEvent) {
+    for (let i = 0; i < e.touches.length; i++) {
+      const touch = e.touches[i];
+
+      const { clientX, clientY } = touch;
+      const dx = clientX - canvas.width / 2;
+      const dy = clientY - canvas.height;
+
+      createBullet(dx, dy);
+    }
   }
 
   function handleResetShootInterval() {
-    clearInterval(interval);
+    if (interval) {
+      clearInterval(interval);
+      interval = null;
+    }
   }
+
+  const createBullet = (dx: number, dy: number) => {
+    const angle = Math.atan2(dy, dx);
+
+    bulletService.spawnBullet(canvas.width / 2, canvas.height, angle);
+    recoilService.recoil();
+  };
 
   const handleShootAttempt = () => {
     const INTERVAL_INTENCITY = isMobile() ? 250 : 100;
@@ -31,10 +53,7 @@ export function handleUserMouseInput(
       const dx = recoilService.cursorX - canvas.width / 2;
       const dy = recoilService.cursorY - canvas.height;
 
-      const angle = Math.atan2(dy, dx);
-
-      bulletService.spawnBullet(canvas.width / 2, canvas.height, angle);
-      recoilService.recoil();
+      createBullet(dx, dy);
     }, INTERVAL_INTENCITY);
 
     if (isMobile()) {
@@ -68,22 +87,25 @@ export function handleUserMouseInput(
     }
   }
 
+  handleResetShootInterval();
+
   if (isMobile()) {
-    canvas.addEventListener("touchstart", handleShootAttempt);
-    canvas.addEventListener("touchmove", handleTouchMove);
+    canvas.addEventListener("touchstart", handleTouchStart);
+    // canvas.addEventListener("touchmove", handleTouchMove);
     canvas.addEventListener("touchend", handleResetShootInterval);
   } else {
     canvas.addEventListener("mousedown", handleShootAttempt);
     canvas.addEventListener("mousemove", handleMouseMove);
-    // canvas.addEventListener("click", handleShootAttempt);
 
     document.addEventListener("keydown", handleKeyPress);
   }
 
   function deactivateUserMotion() {
+    handleResetShootInterval();
+
     if (isMobile()) {
-      canvas.removeEventListener("touchstart", handleShootAttempt);
-      canvas.removeEventListener("touchmove", handleTouchMove);
+      canvas.removeEventListener("touchstart", handleTouchStart);
+      // canvas.removeEventListener("touchmove", handleTouchMove);
       canvas.removeEventListener("touchend", handleResetShootInterval);
     } else {
       canvas.removeEventListener("mousedown", handleShootAttempt);

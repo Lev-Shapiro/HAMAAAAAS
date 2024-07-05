@@ -138,6 +138,8 @@ export class MenuService {
     return new Promise<void>((resolve) => {
       let lastSetupTime = 0;
 
+      const rect = this.canvas.getBoundingClientRect();
+
       const handleClick = async (event: MouseEvent) => {
         const elapsedTime = Date.now() - lastSetupTime;
         if (elapsedTime < 1500) {
@@ -146,8 +148,8 @@ export class MenuService {
 
         const { buttonX, buttonY } = this.getButtonCoordsByIndex(0);
 
-        const clickX = event.clientX;
-        const clickY = event.clientY;
+        const clickX = event.clientX - rect.left;
+        const clickY = event.clientY - rect.top;
 
         if (
           clickX >= buttonX &&

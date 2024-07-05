@@ -20,6 +20,8 @@ export class RecoilService {
   }
 
   drawCursor() {
+    if(isMobile()) return;
+    
     this.ctx.beginPath();
     const img = new Image();
     img.src = "/cursor.png";
