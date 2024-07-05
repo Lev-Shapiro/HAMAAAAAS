@@ -69,19 +69,19 @@ export function handleUserMouseInput(
 
   function handleKeyPress(e: KeyboardEvent) {
     // M = Menu
-    if (e.key === "m") {
+    if (e.key === "m" || e.key === "M" || e.key === "м" || e.key === "М" || e.key === "מ") {
       handleOpenMenu();
       return;
     }
 
     // R = Reload
-    if (e.key === "r") {
+    if (e.key === "r" || e.key === "R" || e.key === "к" || e.key === "К" || e.key === "ר") {
       bulletService.reload();
       return;
     }
 
     // S = Shop
-    if (e.key === "s") {
+    if (e.key === "s" || e.key === "S" || e.key === "ы" || e.key === "Ы" || e.key === "ד") {
       handleToggleShop();
       return;
     }
