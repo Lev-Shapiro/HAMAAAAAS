@@ -87,8 +87,6 @@ body {
 .modal__content {
   display: flex;
   gap: 20px;
-
-
   overflow: auto;
 }
 

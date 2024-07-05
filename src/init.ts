@@ -103,7 +103,7 @@ export class GameServices {
           height: 70,
         },
         [TerroristType.CAR_TERRORIST]: {
-          speed: 80,
+          speed: 60,
           health: 500,
           width: 70,
           height: 70,
@@ -115,7 +115,7 @@ export class GameServices {
           height: 606 / 4,
         },
         [TerroristType.BOMBER]: {
-          speed: 60,
+          speed: 50,
           health: 250,
           width: 119 / 4,
           height: 256 / 4,

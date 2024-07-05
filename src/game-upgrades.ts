@@ -62,7 +62,7 @@ export class GameUpgrades {
     "/capacity.webp",
     "Increase bullet capacity",
     (level) => {
-      const baseAmmo = 16,
+      const baseAmmo = 32,
         basePrice = 10,
         priceRate = 1.5,
         ammoIncrement = 16;

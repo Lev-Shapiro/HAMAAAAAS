@@ -250,11 +250,11 @@ export class Game extends GameServices {
         break;
 
       case TerroristType.BOMBER:
-        this.coinBank.data.value += 25;
+        this.coinBank.data.value += 100;
         break;
 
       case TerroristType.CAR_TERRORIST:
-        this.coinBank.data.value += 10;
+        this.coinBank.data.value += 50;
         break;
 
       case TerroristType.SINWAR:
